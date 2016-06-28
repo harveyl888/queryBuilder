@@ -1,7 +1,14 @@
-# (uncomment to add a dependency)
-# dependencies:
-#  - name:
-#    version:
-#    src:
-#    script:
-#    stylesheet:
+dependencies:
+- name: jQueryextendext
+  version: 0.1.2
+  src: htmlwidgets/lib/jQueryextendext
+  script: ./jQuery.extendext.min.js
+- name: doT
+  version: 1.0.3
+  src: htmlwidgets/lib/doT
+  script: ./doT.min.js
+- name: queryBuilder
+  version: 2.3.3
+  src: htmlwidgets/lib
+  script: ./js/query-builder.min.js
+  stylesheet: ./css/query-builder.default.min.css
