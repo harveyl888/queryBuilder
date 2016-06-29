@@ -13,8 +13,9 @@ server <- function(input, output) {
 
 ui <- shinyUI(
   fluidPage(
-    queryBuilderOutput('q1')
-    )
+    fluidRow(
+      column(8, queryBuilderOutput('q1'))
+    ))
 )
 
 shinyApp(server = server, ui = ui)
