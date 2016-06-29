@@ -5,11 +5,21 @@
 #' @import htmlwidgets
 #'
 #' @export
-queryBuilder <- function(message, width = NULL, height = NULL) {
+queryBuilder <- function(data = NULL, filters = c(), type = c(), width = NULL, height = NULL) {
+
+  if (is.null(data)) return()
+  if (length(filters) == 0 | length(filters) != length(type)) return()
+  if (!all(filters %in% names(data))) return()
+
+  l.filters <- list()
+  for (i in 1:length(filters)) {
+    l.filters[[i]] <- list(name = filters[i], type = type[i])
+  }
+
 
   # forward options using x
   x = list(
-    message = message
+    data = l.filters
   )
 
   # create widget

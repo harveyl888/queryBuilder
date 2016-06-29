@@ -12,12 +12,22 @@ HTMLWidgets.widget({
 
       renderValue: function(x) {
 
+        window.xx = x;
+
+//        alert(x.data[0].name)
+
+        var filter1 = JSON.parse('{ "id": "name", "label": "Name", "type": "string" }');
+
+
         $(el).queryBuilder({
-          filters:[{
+
+          filters:[ filter1 ]
+
+ /*         filters:[{
             id: 'name',
             label: 'Name',
             type: 'string'
-          }]
+          }]*/
         });
 
       },

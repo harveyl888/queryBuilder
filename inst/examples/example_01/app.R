@@ -7,7 +7,7 @@ library(queryBuilder)
 
 server <- function(input, output) {
   output$q1 <- renderQueryBuilder({
-    queryBuilder('m')
+    queryBuilder::queryBuilder(data = mtcars, filters = c('mpg', 'disp'), type = c('string', 'string'))
   })
 }
 
