@@ -16,18 +16,20 @@ HTMLWidgets.widget({
 
 //        alert(x.data[0].name)
 
-        var filter1 = JSON.parse('{ "id": "name", "label": "Name", "type": "string" }');
+//        var filter1 = JSON.parse('{ "id": "name", "label": "Name", "type": "string" }');
 
+
+        // Generate json strings from x.data
+        var jsonString;
+        var filter = [];
+        x.data.forEach(function(i) {
+          jsonString = '{ "id": "' + i.name + '", "label": "' + i.name + '" , "type": "' + i.type + '" }';
+          filter.push(jsonString);
+        });
+        var jsonFilter = JSON.parse("[" + filter.join() + "]");
 
         $(el).queryBuilder({
-
-          filters:[ filter1 ]
-
- /*         filters:[{
-            id: 'name',
-            label: 'Name',
-            type: 'string'
-          }]*/
+          filters: jsonFilter
         });
 
       },
