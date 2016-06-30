@@ -14,18 +14,39 @@ HTMLWidgets.widget({
 
         window.xx = x;
 
-//        alert(x.data[0].name)
-
-//        var filter1 = JSON.parse('{ "id": "name", "label": "Name", "type": "string" }');
 
 
         // Generate json strings from x.data
-
-
         var jsonString;
         var filter = [];
         x.data.forEach(function(i) {
+        jsonString = '{ "id": "' + i.name + '", "label": "' + i.name + '", "type": "' + i.type + '", "input": "' + i.input + '"';
+        if (i.type == 'integer') {
+             var myProps = ["min", "max", "step"];
+              if (i.hasOwnProperty("min") | i.hasOwnProperty("max") | i.hasOwnProperty("step")) {
+                jsonString += ', "validation": {';
+                var addjson = [];
+                for (var j in myProps) {
+                  if (i.hasOwnProperty(myProps[j])) { addjson.push('"' + myProps[j] + '": ' + i[myProps[j]]); }
+                }
+                jsonString += addjson.join() + '}';
+              }
+        }
+        if (i.input == 'select') {
+                        if (i.hasOwnProperty("values")) {
+                jsonString += ', "values": {';
+                var addjsonSelect = [];
 
+                for (var k = 0; k < i.values.length; k++) {
+                  addjsonSelect.push('"' + i.values[k] + '": "' + i.values[k] + '"');
+                }
+                jsonString += addjsonSelect.join(", ") + '}';
+              }
+          }
+          jsonString += '}';
+
+
+/*
           switch(i.type) {
             case "string":
               jsonString = '{ "id": "' + i.name + '", "label": "' + i.name + '", "type": "' + i.type + '", "input": "text" }';
@@ -43,7 +64,21 @@ HTMLWidgets.widget({
               }
               jsonString += '}';
               break;
-          }
+            case "select":
+              jsonString = '{ "id": "' + i.name + '", "label": "' + i.name + '", "type": "' + i.type + '", "input": "select"';
+
+              if (i.hasOwnProperty("values")) {
+                jsonString += ', "values": {';
+                var addjsonSelect = [];
+
+                for (var k = 0; k < i.values.length; k++) {
+                  addjsonSelect.push('"' + i.values[k] + '": "' + i.values[k] + '"');
+                }
+                jsonString += addjsonSelect.join(", ") + '}';
+              }
+              jsonString += '}';
+              break;
+          }  */
           filter.push(jsonString);
         });
         var jsonFilter = JSON.parse("[" + filter.join() + "]");

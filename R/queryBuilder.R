@@ -11,6 +11,14 @@ queryBuilder <- function(data = NULL, filters = list(), width = NULL, height = N
   if (length(filters) == 0) return()
   if (!all(sapply(filters, function(x) x['name']) %in% names(data))) return()
 
+  for (i in 1:length(filters)) {
+    if (filters[[i]]['input'] == 'select') {
+      filters[[i]][['values']] <- unique(data[[filters[[i]][['name']]]])
+    }
+  }
+
+  print(filters)
+
   # forward options using x
   x = list(
     data = filters
