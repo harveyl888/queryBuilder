@@ -12,79 +12,50 @@ HTMLWidgets.widget({
 
       renderValue: function(x) {
 
-        window.xx = x;
-
+        // for debugging
+        window.widgetInput = x;
 
 
         // Generate json strings from x.data
-        var jsonString;
-        var filter = [];
+        var jsonString;  // string to store json-formatted filter
+        var filter = [];  // array to store all the filters
         x.data.forEach(function(i) {
-        jsonString = '{ "id": "' + i.name + '", "label": "' + i.name + '", "type": "' + i.type + '"';
-        if (i.hasOwnProperty("input")) {
-          jsonString += ', "input": "' + i.input + '"';
-        }
-        if (i.type == 'integer') {
-          var myProps = ["min", "max", "step"];
-          if (i.hasOwnProperty("min") | i.hasOwnProperty("max") | i.hasOwnProperty("step")) {
-            jsonString += ', "validation": {';
-            var addjsonNum = [];
-            for (var j in myProps) {
-              if (i.hasOwnProperty(myProps[j])) { addjsonNum.push('"' + myProps[j] + '": ' + i[myProps[j]]); }
-            }
-            jsonString += addjsonNum.join() + '}';
+          jsonString = '{ "id": "' + i.name + '", "label": "' + i.name + '", "type": "' + i.type + '"';
+          if (i.hasOwnProperty("input")) {
+            jsonString += ', "input": "' + i.input + '"';
           }
-        }
-        if (i.input == 'select') {
-          if (i.hasOwnProperty("values")) {
-            jsonString += ', "values": {';
-            var addjsonSelect = [];
-
-            for (var k = 0; k < i.values.length; k++) {
-              addjsonSelect.push('"' + i.values[k] + '": "' + i.values[k] + '"');
+          if (i.type == 'integer') {
+            var myProps = ["min", "max", "step"];
+            if (i.hasOwnProperty("min") | i.hasOwnProperty("max") | i.hasOwnProperty("step")) {
+              jsonString += ', "validation": {';
+              var addjsonNum = [];
+              for (var j in myProps) {
+                if (i.hasOwnProperty(myProps[j])) { addjsonNum.push('"' + myProps[j] + '": ' + i[myProps[j]]); }
+              }
+              jsonString += addjsonNum.join() + '}';
             }
-            jsonString += addjsonSelect.join(", ") + '}';
           }
-        }
-        jsonString += '}';
+          if (i.input == 'select') {
+            if (i.hasOwnProperty("values")) {
+              jsonString += ', "values": {';
+              var addjsonSelect = [];
 
-/*
-          switch(i.type) {
-            case "string":
-              jsonString = '{ "id": "' + i.name + '", "label": "' + i.name + '", "type": "' + i.type + '", "input": "text" }';
-              break;
-            case "integer":
-              jsonString = '{ "id": "' + i.name + '", "label": "' + i.name + '", "type": "' + i.type + '", "input": "text"';
-              var myProps = ["min", "max", "step"];
-              if (i.hasOwnProperty("min") | i.hasOwnProperty("max") | i.hasOwnProperty("step")) {
-                jsonString += ', "validation": {';
-                var addjson = [];
-                for (var j in myProps) {
-                  if (i.hasOwnProperty(myProps[j])) { addjson.push('"' + myProps[j] + '": ' + i[myProps[j]]); }
-                }
-                jsonString += addjson.join() + '}';
+              for (var k = 0; k < i.values.length; k++) {
+                addjsonSelect.push('"' + i.values[k] + '": "' + i.values[k] + '"');
               }
-              jsonString += '}';
-              break;
-            case "select":
-              jsonString = '{ "id": "' + i.name + '", "label": "' + i.name + '", "type": "' + i.type + '", "input": "select"';
-
-              if (i.hasOwnProperty("values")) {
-                jsonString += ', "values": {';
-                var addjsonSelect = [];
-
-                for (var k = 0; k < i.values.length; k++) {
-                  addjsonSelect.push('"' + i.values[k] + '": "' + i.values[k] + '"');
-                }
-                jsonString += addjsonSelect.join(", ") + '}';
-              }
-              jsonString += '}';
-              break;
-          }  */
-          filter.push(jsonString);
+              jsonString += addjsonSelect.join(", ") + '}';
+            }
+          }
+          jsonString += '}';
+          filter.push(jsonString);  // add this filter to the filter array
         });
-        var jsonFilter = JSON.parse("[" + filter.join() + "]");
+        var jsonFilter = JSON.parse("[" + filter.join() + "]");  // parse all the filters
 
+        // for debugging
+        window.jsonFilter = jsonFilter;
+
+
+        // build the query
         $(el).queryBuilder({
           filters: jsonFilter
         });
