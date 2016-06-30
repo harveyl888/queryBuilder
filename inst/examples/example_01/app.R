@@ -12,21 +12,15 @@ server <- function(input, output) {
                                                list(name = 'gear', type = 'string', input = 'select'))
     )
   })
+
+  output$txt1 <- renderPrint(input$q1_out)
 }
-
-
-### Consider this:
-## filter = list(name = 'mpg', type = 'string', input = 'text')
-## filter = list(name = 'mpg', type = 'string', input = 'select')  # use select box
-## filter = list(name = 'mpg', type = 'integer', input = 'select')  # use select box, return ref
-## filter = list(name = 'mpg', type = 'string', input = 'selectize', multiple = TRUE)  # use selectize
-## for select and selectize generate choices in R
-
 
 ui <- shinyUI(
   fluidPage(
     fluidRow(
-      column(8, queryBuilderOutput('q1'))
+      column(8, queryBuilderOutput('q1')),
+      verbatimTextOutput('txt1')
     ))
 )
 

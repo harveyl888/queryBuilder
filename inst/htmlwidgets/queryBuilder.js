@@ -87,6 +87,10 @@ HTMLWidgets.widget({
           filters: jsonFilter
         });
 
+        $(el).on('afterUpdateRuleValue.queryBuilder', function(e, rule, error, value) {
+          Shiny.onInputChange(el.id + '_out', $(el).queryBuilder('getRules'));
+        });
+
       },
 
       resize: function(width, height) {
