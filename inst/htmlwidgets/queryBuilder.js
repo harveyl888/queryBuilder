@@ -20,10 +20,30 @@ HTMLWidgets.widget({
 
 
         // Generate json strings from x.data
+
+
         var jsonString;
         var filter = [];
         x.data.forEach(function(i) {
-          jsonString = '{ "id": "' + i.name + '", "label": "' + i.name + '" , "type": "' + i.type + '" }';
+
+          switch(i.type) {
+            case "string":
+              jsonString = '{ "id": "' + i.name + '", "label": "' + i.name + '", "type": "' + i.type + '", "input": "text" }';
+              break;
+            case "integer":
+              jsonString = '{ "id": "' + i.name + '", "label": "' + i.name + '", "type": "' + i.type + '", "input": "text"';
+              var myProps = ["min", "max", "step"];
+              if (i.hasOwnProperty("min") | i.hasOwnProperty("max") | i.hasOwnProperty("step")) {
+                jsonString += ', "validation": {';
+                var addjson = [];
+                for (var j in myProps) {
+                  if (i.hasOwnProperty(myProps[j])) { addjson.push('"' + myProps[j] + '": ' + i[myProps[j]]); }
+                }
+                jsonString += addjson.join() + '}';
+              }
+              jsonString += '}';
+              break;
+          }
           filter.push(jsonString);
         });
         var jsonFilter = JSON.parse("[" + filter.join() + "]");
