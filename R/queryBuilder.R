@@ -17,8 +17,6 @@ queryBuilder <- function(data = NULL, filters = list(), width = NULL, height = N
     }
   }
 
-  print(filters)
-
   # forward options using x
   x = list(
     data = filters

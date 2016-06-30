@@ -8,7 +8,7 @@ library(queryBuilder)
 server <- function(input, output) {
   output$q1 <- renderQueryBuilder({
     queryBuilder(data = mtcars, filters = list(list(name = 'mpg', type = 'string', input = 'text'),
-                                               list(name = 'disp', type = 'integer', input = 'text', min=0, max=5, step=2),
+                                               list(name = 'disp', type = 'integer', min=0, max=5, step=2),
                                                list(name = 'gear', type = 'string', input = 'select'))
     )
   })
