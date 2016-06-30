@@ -54,6 +54,8 @@ HTMLWidgets.widget({
         // for debugging
         window.jsonFilter = jsonFilter;
 
+        // initialize validate status to false
+        Shiny.onInputChange(el.id + '_validate', false);
 
         // build the query
         $(el).queryBuilder({
@@ -65,9 +67,10 @@ HTMLWidgets.widget({
           e.preventDefault();
         });
 
-        // return shiny variable containing filters
+        // return shiny variables
         $(el).on('afterUpdateRuleValue.queryBuilder', function(e, rule, error, value) {
           Shiny.onInputChange(el.id + '_out', $(el).queryBuilder('getRules'));
+          Shiny.onInputChange(el.id + '_validate', $(el).queryBuilder('validate'));
         });
 
       },

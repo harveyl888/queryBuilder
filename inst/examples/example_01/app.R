@@ -13,14 +13,16 @@ server <- function(input, output) {
     )
   })
 
-  output$txt1 <- renderPrint(input$q1_out)
+  output$txt1 <- renderPrint(input$q1_validate)
+  output$txt2 <- renderPrint(input$q1_out)
 }
 
 ui <- shinyUI(
   fluidPage(
     fluidRow(
       column(8, queryBuilderOutput('q1')),
-      verbatimTextOutput('txt1')
+      verbatimTextOutput('txt1'),
+      verbatimTextOutput('txt2')
     ))
 )
 
