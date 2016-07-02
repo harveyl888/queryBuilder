@@ -1,6 +1,9 @@
-#' <Add Title>
+#' queryBuilder
 #'
-#' <Add Description>
+#' create a queryBuilder widget from a series of filters
+#'
+#' @param data data frame
+#' @param filters list of lists containing filter parameters
 #'
 #' @import htmlwidgets
 #'
