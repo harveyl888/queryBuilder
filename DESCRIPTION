@@ -1,9 +1,11 @@
 Package: queryBuilder
-Title: What the Package Does (one line, title case)
-Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-Depends: R (>= 3.3.0)
-License: What license is it under?
+Title: queryBuilder htmlwidget
+Version: 0.0.1
+Authors@R: c(person("Harvey", "Lieberman", email = "harvey.lieberman@gmail.com", role = c("aut", "cre")),person("Damien Sorel", role = c("aut", "cph"), comment = "jQuery-QueryBuilder javascript library"))
+Description: htmlwidget for jQuery-QueryBuilder, a jQuery plugin offering an interface to create complex queries
+Depends:
+    R (>= 3.3.0)
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 5.0.0
