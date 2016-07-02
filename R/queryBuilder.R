@@ -35,6 +35,19 @@ queryBuilder <- function(data = NULL, filters = list(), width = NULL, height = N
   )
 }
 
+#' @export
+filterTable <- function(filters = NULL, data = NULL) {
+  if (is.null(filters) | is.null(data)) return(data)
+
+  ## Loop through list
+  ## Currently works on linear list (no groups, no recursion)
+
+  cond <- filters['condition']
+  return(cond)
+
+}
+
+
 #' Shiny bindings for queryBuilder
 #'
 #' Output and render functions for using queryBuilder within Shiny
