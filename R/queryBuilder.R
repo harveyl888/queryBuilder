@@ -41,11 +41,29 @@ filterTable <- function(filters = NULL, data = NULL) {
 
   ## Loop through list
   ## Currently works on linear list (no groups, no recursion)
-
   cond <- filters['condition']
   return(cond)
 
 }
+
+
+## recursive function to process filter
+recurseFilter <- function(condition = 'AND', filter = NULL) {
+  fs <- ''
+  for (i in 1:length(filter)) {
+    if (typeof(filter[[i]]) == 'list') {
+      fs <- paste0(fs, recurseFilter(condition = condition, filter = filter[[i]]))
+    } else {
+      fs <- paste(fs, filter[[i]])
+    }
+  }
+  return(fs)
+}
+
+## Test the recursion
+recurseFilter(condition = 'AND', filter = list('A', 'B', list('C', 'D')))
+
+
 
 
 #' Shiny bindings for queryBuilder
