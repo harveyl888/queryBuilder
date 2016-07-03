@@ -47,22 +47,40 @@ filterTable <- function(filters = NULL, data = NULL) {
 }
 
 
+testData1 <- list(condition = 'AND',
+                  rules = list(list(id = 'disp', type = 'integer', input = 'text', operator = 'equal', value = 2),
+                  list(id = 'gear', type = 'string', input = 'select', operator = 'equal', value = '3')))
+
+testData2 <- list(condition = 'AND',
+                  rules = list(list(id = 'disp', type = 'integer', input = 'text', operator = 'equal', value = 2),
+                               list(id = 'mpg', type = 'string', input = 'text', operator = 'equal', value = '4'),
+                               list(condition = 'OR',
+                                    rules = list(list(id = 'gear', type = 'string', input = 'select', operator = 'equal', value = '3'),
+                                                 list(id = 'gear', type = 'string', input = 'select', operator = 'equal', value = '5')))))
+
+lookup <- function(f) {
+  df.operators <- data.frame(ref = c('AND', 'OR', 'equal'), value = c('&', '|', '=='))
+  return(df.operators[df.operators == f, 'value'])
+}
+
 ## recursive function to process filter
-recurseFilter <- function(condition = 'AND', filter = NULL) {
+recurseFilter <- function(filter = NULL) {
   fs <- ''
-  for (i in 1:length(filter)) {
-    if (typeof(filter[[i]]) == 'list') {
-      fs <- paste0(fs, recurseFilter(condition = condition, filter = filter[[i]]))
+  for (i in 1:length(filter$rules)) {
+    if (typeof(filter$rules[[i]]$rules) == 'list') {
+      fs <- paste(fs, paste('(', recurseFilter(filter = filter$rules[[i]]), ')'), sep = paste0(' ', lookup(filter$condition), ' '))
     } else {
-      fs <- paste(fs, filter[[i]])
+      if (fs == '') {
+        fs <- paste(fs, paste(filter$rules[[i]]$id, lookup(filter$rules[[i]]$operator), filter$rules[[i]]$value))
+      } else {
+        ##        fs <- paste(fs, paste('(', filter$rules[[i]]$id, filter$rules[[i]]$operator, filter$rules[[i]]$value, ')'), sep = paste0(' ', filter$condition, ' '))
+        fs <- paste(fs, paste(filter$rules[[i]]$id, lookup(filter$rules[[i]]$operator), filter$rules[[i]]$value), sep = paste0(' ', lookup(filter$condition), ' '))
+      }
     }
   }
   return(fs)
 }
-
-## Test the recursion
-recurseFilter(condition = 'AND', filter = list('A', 'B', list('C', 'D')))
-
+#recurseFilter(testData2)
 
 
 
