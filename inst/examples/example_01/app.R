@@ -16,7 +16,10 @@ server <- function(input, output) {
   output$txt1 <- renderPrint(filterTable(input$q1_out, mtcars, 'text'))
   output$txt2 <- renderPrint(input$q1_out)
 
-  output$dt <- renderTable(filterTable(input$q1_out, mtcars, 'table'))
+  output$dt <- renderTable({
+    req(input$q1_validate)
+    filterTable(input$q1_out, mtcars, 'table')
+  })
 }
 
 ui <- shinyUI(
