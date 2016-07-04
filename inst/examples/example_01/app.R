@@ -14,17 +14,20 @@ server <- function(input, output) {
   })
 
   output$txt1 <- renderPrint(input$q1_validate)
-#  output$txt1 <- renderPrint(filterTable(input$q1_out, mtcars))
-  output$txt2 <- renderPrint(filterTable(input$q1_out, mtcars))
+
+  output$dt <- renderTable({
+    filterTable(input$q1_out, mtcars)
+  })
 }
 
 ui <- shinyUI(
   fluidPage(
     fluidRow(
       column(8, queryBuilderOutput('q1')),
-      verbatimTextOutput('txt1'),
-      verbatimTextOutput('txt2')
-    ))
+      verbatimTextOutput('txt1')
+    ),
+    tableOutput('dt')
+  )
 )
 
 shinyApp(server = server, ui = ui)

@@ -35,12 +35,14 @@ queryBuilder <- function(data = NULL, filters = list(), width = NULL, height = N
   )
 }
 
+#' @import dplyr
 #' @export
 filterTable <- function(filters = NULL, data = NULL) {
   if (is.null(filters) | is.null(data)) return(data)
   ## Run through list recursively and generate a filter
   f <- recurseFilter(filters)
-  return(f)
+  df <- dplyr::filter_(data, f)
+  return(df)
 }
 
 
