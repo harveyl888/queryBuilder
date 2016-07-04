@@ -50,6 +50,7 @@ HTMLWidgets.widget({
           filter.push(jsonString);  // add this filter to the filter array
         });
         var jsonFilter = JSON.parse("[" + filter.join() + "]");  // parse all the filters
+        Shiny.onInputChange(el.id + '_filters', '[' + filter.join() + ']');
 
         // for debugging
         window.jsonFilter = jsonFilter;
