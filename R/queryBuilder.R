@@ -64,7 +64,7 @@ filterTable <- function(filters = NULL, data = NULL, output = c('table', 'text')
 #                                                  list(id = 'gear', type = 'string', input = 'select', operator = 'equal', value = '5')))))
 
 lookup <- function(f) {
-  l.operators <- list('AND' = '&', 'OR' = '|', 'equal' = '==', 'not equal' = '!=',
+  l.operators <- list('AND' = '&', 'OR' = '|', 'equal' = '==', 'not_equal' = '!=',
                       'less' = '<', 'less_or_equal' = '<=', 'greater' = '>', 'greater_or_equal' = '>=')
   return(l.operators[[f]])
 }
