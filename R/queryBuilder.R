@@ -38,29 +38,26 @@ queryBuilder <- function(data = NULL, filters = list(), width = NULL, height = N
 #' @export
 filterTable <- function(filters = NULL, data = NULL) {
   if (is.null(filters) | is.null(data)) return(data)
-
-  ## Loop through list
-  ## Currently works on linear list (no groups, no recursion)
-  cond <- filters['condition']
-  return(cond)
-
+  ## Run through list recursively and generate a filter
+  f <- recurseFilter(filters)
+  return(f)
 }
 
 
-testData1 <- list(condition = 'AND',
-                  rules = list(list(id = 'disp', type = 'integer', input = 'text', operator = 'equal', value = 2),
-                  list(id = 'gear', type = 'string', input = 'select', operator = 'equal', value = '3')))
-
-testData2 <- list(condition = 'AND',
-                  rules = list(list(id = 'disp', type = 'integer', input = 'text', operator = 'equal', value = 2),
-                               list(id = 'mpg', type = 'string', input = 'text', operator = 'equal', value = '4'),
-                               list(condition = 'OR',
-                                    rules = list(list(id = 'gear', type = 'string', input = 'select', operator = 'equal', value = '3'),
-                                                 list(id = 'gear', type = 'string', input = 'select', operator = 'equal', value = '5')))))
+# testData1 <- list(condition = 'AND',
+#                   rules = list(list(id = 'disp', type = 'integer', input = 'text', operator = 'equal', value = 2),
+#                   list(id = 'gear', type = 'string', input = 'select', operator = 'equal', value = '3')))
+#
+# testData2 <- list(condition = 'AND',
+#                   rules = list(list(id = 'disp', type = 'integer', input = 'text', operator = 'equal', value = 2),
+#                                list(id = 'mpg', type = 'string', input = 'text', operator = 'equal', value = '4'),
+#                                list(condition = 'OR',
+#                                     rules = list(list(id = 'gear', type = 'string', input = 'select', operator = 'equal', value = '3'),
+#                                                  list(id = 'gear', type = 'string', input = 'select', operator = 'equal', value = '5')))))
 
 lookup <- function(f) {
-  df.operators <- data.frame(ref = c('AND', 'OR', 'equal'), value = c('&', '|', '=='))
-  return(df.operators[df.operators == f, 'value'])
+  l.operators <- list('AND' = '&', 'OR' = '|', 'equal' = '==')
+  return(l.operators[[f]])
 }
 
 ## recursive function to process filter
@@ -73,7 +70,6 @@ recurseFilter <- function(filter = NULL) {
       if (fs == '') {
         fs <- paste(fs, paste(filter$rules[[i]]$id, lookup(filter$rules[[i]]$operator), filter$rules[[i]]$value))
       } else {
-        ##        fs <- paste(fs, paste('(', filter$rules[[i]]$id, filter$rules[[i]]$operator, filter$rules[[i]]$value, ')'), sep = paste0(' ', filter$condition, ' '))
         fs <- paste(fs, paste(filter$rules[[i]]$id, lookup(filter$rules[[i]]$operator), filter$rules[[i]]$value), sep = paste0(' ', lookup(filter$condition), ' '))
       }
     }

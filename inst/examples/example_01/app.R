@@ -13,9 +13,9 @@ server <- function(input, output) {
     )
   })
 
-#  output$txt1 <- renderPrint(input$q1_validate)
-  output$txt1 <- renderPrint(filterTable(input$q1_out, mtcars))
-  output$txt2 <- renderPrint(input$q1_out)
+  output$txt1 <- renderPrint(input$q1_validate)
+#  output$txt1 <- renderPrint(filterTable(input$q1_out, mtcars))
+  output$txt2 <- renderPrint(filterTable(input$q1_out, mtcars))
 }
 
 ui <- shinyUI(
