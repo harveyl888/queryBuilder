@@ -71,13 +71,13 @@ lookup <- function(f) {
 
 ## recursive function to process filter
 recurseFilter <- function(filter = NULL) {
-  fs <- ''
+  fs <- NULL
   for (i in 1:length(filter$rules)) {
     if (typeof(filter$rules[[i]]$rules) == 'list') {
-      fs <- paste(fs, paste('(', recurseFilter(filter = filter$rules[[i]]), ')'), sep = paste0(' ', lookup(filter$condition), ' '))
+      fs <- paste(fs, paste0('(', recurseFilter(filter = filter$rules[[i]]), ')'), sep = paste0(' ', lookup(filter$condition), ' '))
     } else {
-      if (fs == '') {
-        fs <- paste(fs, paste(filter$rules[[i]]$id, lookup(filter$rules[[i]]$operator), filter$rules[[i]]$value))
+      if (is.null(fs)) {
+        fs <- paste(filter$rules[[i]]$id, lookup(filter$rules[[i]]$operator), filter$rules[[i]]$value)
       } else {
         fs <- paste(fs, paste(filter$rules[[i]]$id, lookup(filter$rules[[i]]$operator), filter$rules[[i]]$value), sep = paste0(' ', lookup(filter$condition), ' '))
       }
