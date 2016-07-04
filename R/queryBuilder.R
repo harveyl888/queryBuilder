@@ -37,12 +37,18 @@ queryBuilder <- function(data = NULL, filters = list(), width = NULL, height = N
 
 #' @import dplyr
 #' @export
-filterTable <- function(filters = NULL, data = NULL) {
+filterTable <- function(filters = NULL, data = NULL, output = c('table', 'text')) {
   if (is.null(filters) | is.null(data)) return(data)
   ## Run through list recursively and generate a filter
   f <- recurseFilter(filters)
-  df <- dplyr::filter_(data, f)
-  return(df)
+  if (output == 'text') {
+    return(f)
+  } else if (output == 'table') {
+    df <- dplyr::filter_(data, f)
+    return(df)
+  } else {
+    return()
+  }
 }
 
 
@@ -58,7 +64,8 @@ filterTable <- function(filters = NULL, data = NULL) {
 #                                                  list(id = 'gear', type = 'string', input = 'select', operator = 'equal', value = '5')))))
 
 lookup <- function(f) {
-  l.operators <- list('AND' = '&', 'OR' = '|', 'equal' = '==')
+  l.operators <- list('AND' = '&', 'OR' = '|', 'equal' = '==', 'not equal' = '!=',
+                      'less' = '<', 'less_or_equal' = '<=', 'greater' = '>', 'greater_or_equal' = '>=')
   return(l.operators[[f]])
 }
 

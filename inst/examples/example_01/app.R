@@ -7,26 +7,27 @@ library(queryBuilder)
 
 server <- function(input, output) {
   output$q1 <- renderQueryBuilder({
-    queryBuilder(data = mtcars, filters = list(list(name = 'mpg', type = 'string', input = 'text'),
-                                               list(name = 'disp', type = 'integer', min=0, max=5, step=2),
+    queryBuilder(data = mtcars, filters = list(list(name = 'mpg', type = 'double', min=min(mtcars$mpg), max=max(mtcars$mpg), step=0.1),
+                                               list(name = 'disp', type = 'integer', min=60, max=200, step=1),
                                                list(name = 'gear', type = 'string', input = 'select'))
     )
   })
 
-  output$txt1 <- renderPrint(input$q1_validate)
+  output$txt1 <- renderPrint(filterTable(input$q1_out, mtcars, 'text'))
+  output$txt2 <- renderPrint(input$q1_out)
 
-  output$dt <- renderTable({
-    filterTable(input$q1_out, mtcars)
-  })
+  output$dt <- renderTable(filterTable(input$q1_out, mtcars, 'table'))
 }
 
 ui <- shinyUI(
   fluidPage(
     fluidRow(
-      column(8, queryBuilderOutput('q1')),
-      verbatimTextOutput('txt1')
-    ),
-    tableOutput('dt')
+      column(8, queryBuilderOutput('q1'),
+             tableOutput('dt')
+      ),
+      verbatimTextOutput('txt1'),
+      verbatimTextOutput('txt2')
+    )
   )
 )
 
