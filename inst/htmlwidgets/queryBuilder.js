@@ -28,7 +28,7 @@ HTMLWidgets.widget({
           if (i.hasOwnProperty("input")) {
             jsonString += ', "input": "' + i.input + '"';
           }
-          if (i.type == 'integer') {
+          if (i.type == 'integer' | i.type == 'double') {
             var myProps = ["min", "max", "step"];
             if (i.hasOwnProperty("min") | i.hasOwnProperty("max") | i.hasOwnProperty("step")) {
               jsonString += ', "validation": {';
@@ -57,7 +57,7 @@ HTMLWidgets.widget({
               addjsonOperators.push('"' + i.operators[op] + '"');
             }
             jsonString += ', "operators": [' + addjsonOperators.join(", ") + ']';
-          } else if (i.type == 'integer') {
+          } else if (i.type == 'integer' | i.type == 'double') {
             jsonString += ', "operators": [' + opObj.numeric + ']';
           } else if (i.type == 'text') {
             jsonString += ', "operators": [' + opObj.text + ']';
