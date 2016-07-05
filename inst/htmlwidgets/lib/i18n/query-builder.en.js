@@ -48,7 +48,9 @@ QueryBuilder.regional['en'] = {
     "is_empty": "is empty",
     "is_not_empty": "is not empty",
     "is_null": "is null",
-    "is_not_null": "is not null"
+    "is_not_null": "is not null",
+    "is_na": "is na",
+    "is_not_na": "is not na"
   },
   "errors": {
     "no_filter": "No filter selected",

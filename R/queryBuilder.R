@@ -16,7 +16,9 @@ queryBuilder <- function(data = NULL, filters = list(), width = NULL, height = N
 
   for (i in 1:length(filters)) {
     if (filters[[i]]['input'] == 'select') {
-      filters[[i]][['values']] <- unique(data[[filters[[i]][['name']]]])
+      uniqueVals <- unique(data[[filters[[i]][['name']]]])
+      uniqueVals <- uniqueVals[!is.na(uniqueVals)]  # get rid of NA value if present
+      filters[[i]][['values']] <- uniqueVals
     }
   }
 
@@ -34,6 +36,102 @@ queryBuilder <- function(data = NULL, filters = list(), width = NULL, height = N
     package = 'queryBuilder'
   )
 }
+
+#' filterTable
+#'
+#' filter a data frame using the output of a queryBuilder htmlWidget
+#'
+#' @param filters output from queryBuilder htmlWidget sent from shiny app as \code{input$el_out} where \code{el} is the htmlWidget element
+#' @param data data frame to filter
+#' @param output string return either a filtered data frame (table) or a text representation of the filter (text)
+#'
+#' @import dplyr
+#' @export
+filterTable <- function(filters = NULL, data = NULL, output = c('table', 'text')) {
+  if (is.null(filters) | is.null(data)) return(data)
+  ## Run through list recursively and generate a filter
+  f <- recurseFilter(filters)
+  if (output == 'text') {
+    return(f)
+  } else if (output == 'table') {
+    df <- dplyr::filter_(data, f)
+    return(df)
+  } else {
+    return()
+  }
+}
+
+
+#' lookup
+#'
+#' internal function to create a filter condition based on id, operator and value
+#'
+#' @param id data frame column id
+#' @param operator filter operator as defined within queryBuilder
+#' @param value filter value
+#' @return string representation of a single filter
+#'
+lookup <- function(id, operator, value) {
+  ## triple style operator, eg a = 1
+  l.operators1 <- list('equal' = '==', 'not_equal' = '!=', 'less' = '<', 'less_or_equal' = '<=', 'greater' = '>', 'greater_or_equal' = '>=')
+  ## functional style operator, eg startswith(a, value)
+  l.operators2 <- list('begins_with' = 'startsWith', 'not_begins_with' = '!startsWith', 'ends_with' = 'endsWith', 'not_ends_with' = '!endsWith')
+  ## grep style operator, eg grepl(value, a)
+  l.operators3 <- list('contains' = 'grepl', 'not_contains' = '!grepl')
+  ## two-value style operator, eg a > 10 & a < 20
+  l.operators4 <- list('between' = 'between', 'not_between' = 'not_between')
+  ## simple boolean function, eg is.na(a)
+  l.operators5 <- list('is_na' = 'is.na', 'is_not_na' = '!is.na')
+
+  if (operator %in% names(l.operators1)) {
+    return(paste(id, l.operators1[[operator]], value))
+  }
+  if (operator %in% names(l.operators2)) {
+    return(paste0(l.operators2[[operator]], '(', id, ', \"', value, '\")'))
+  }
+  if (operator %in% names(l.operators3)) {
+    return(paste0(l.operators3[[operator]], '(\"', value, '\", ', id, ')'))
+  }
+  if (operator %in% names(l.operators4)) {
+    if (operator == 'between') {
+      return(paste0(id, ' > ', range(as.numeric(value))[[1]], ' & ', id, ' < ', range(as.numeric(value))[[2]]))
+    } else {
+      return(paste0('!(', id, ' > ', range(as.numeric(value))[[1]], ' & ', id, ' < ', range(as.numeric(value))[[2]], ')'))
+    }
+  }
+  if (operator %in% names(l.operators5)) {
+    return(paste0(l.operators5[[operator]], '(', id, ')'))
+  }
+}
+
+
+#' recurseFilter
+#'
+#' internal recursive function to process filter
+#'
+#' @param filter filters output from queryBuilder htmlWidget
+#' @return string representation of all filters combined
+#'
+recurseFilter <- function(filter = NULL) {
+  condition <- list('AND' = '&', 'OR' = '|')
+  fs <- NULL
+  for (i in 1:length(filter$rules)) {
+    if (typeof(filter$rules[[i]]$rules) == 'list') {
+      fs <- paste(fs, paste0('(', recurseFilter(filter = filter$rules[[i]]), ')'), sep = paste0(' ', lookup(filter$condition), ' '))
+    } else {
+      if (is.null(fs)) {
+#        fs <- paste(filter$rules[[i]]$id, lookup(filter$rules[[i]]$operator), filter$rules[[i]]$value)
+        fs <- lookup(filter$rules[[i]]$id, filter$rules[[i]]$operator, filter$rules[[i]]$value)
+      } else {
+#        fs <- paste(fs, paste(filter$rules[[i]]$id, lookup(filter$rules[[i]]$operator), filter$rules[[i]]$value), sep = paste0(' ', lookup(filter$condition), ' '))
+        fs <- paste(fs, lookup(filter$rules[[i]]$id, filter$rules[[i]]$operator, filter$rules[[i]]$value), sep = paste0(' ', condition[[filter$condition]], ' '))
+      }
+    }
+  }
+  return(fs)
+}
+
+
 
 #' Shiny bindings for queryBuilder
 #'

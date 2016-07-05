@@ -15,6 +15,10 @@ HTMLWidgets.widget({
         // for debugging
         window.widgetInput = x;
 
+        var opObj = {};
+        opObj.text = '"equal", "not_equal", "begins_with", "not_begins_with", "ends_with", "not_ends_with", "contains", "not_contains", "is_na", "is_not_na"';
+        opObj.numeric = '"equal", "not_equal", "less", "less_or_equal", "greater", "greater_or_equal", "between", "not_between", "is_na", "is_not_na"';
+
 
         // Generate json strings from x.data
         var jsonString;  // string to store json-formatted filter
@@ -24,7 +28,7 @@ HTMLWidgets.widget({
           if (i.hasOwnProperty("input")) {
             jsonString += ', "input": "' + i.input + '"';
           }
-          if (i.type == 'integer') {
+          if (i.type == 'integer' | i.type == 'double') {
             var myProps = ["min", "max", "step"];
             if (i.hasOwnProperty("min") | i.hasOwnProperty("max") | i.hasOwnProperty("step")) {
               jsonString += ', "validation": {';
@@ -46,20 +50,46 @@ HTMLWidgets.widget({
               jsonString += addjsonSelect.join(", ") + '}';
             }
           }
+
+          if (i.hasOwnProperty("operators")) {
+            var addjsonOperators = [];
+            for (var op in i.operators) {
+              addjsonOperators.push('"' + i.operators[op] + '"');
+            }
+            jsonString += ', "operators": [' + addjsonOperators.join(", ") + ']';
+          } else if (i.type == 'integer' | i.type == 'double') {
+            jsonString += ', "operators": [' + opObj.numeric + ']';
+          } else if (i.type == 'text') {
+            jsonString += ', "operators": [' + opObj.text + ']';
+          }
+
+
           jsonString += '}';
           filter.push(jsonString);  // add this filter to the filter array
         });
         var jsonFilter = JSON.parse("[" + filter.join() + "]");  // parse all the filters
+        Shiny.onInputChange(el.id + '_filters', '[' + filter.join() + ']');
 
         // for debugging
         window.jsonFilter = jsonFilter;
+
+        var myOperators = ["equal", "not_equal", "less", "less_or_equal", "greater", "greater_or_equal", "between", "not_between", "begins_with", "not_begins_with", "ends_with", "not_ends_with", "contains", "not_contains"];
+        var operator = [];
+        for (var j in myOperators) {
+          operator.push('{ "type": "' + myOperators[j] + '" }');
+        }
+        operator.push('{ "type": "is_not_na", "nb_inputs": "0", "apply_to": ["number", "string", "datetime", "boolean"] }');
+                operator.push('{ "type": "is_na", "nb_inputs": "0", "apply_to": ["number", "string", "datetime", "boolean"] }');
+
+        var jsonOperators =  JSON.parse("[" + operator.join() + "]");  // parse all the operators
 
         // initialize validate status to false
         Shiny.onInputChange(el.id + '_validate', false);
 
         // build the query
         $(el).queryBuilder({
-          filters: jsonFilter
+          filters: jsonFilter,
+          operators: jsonOperators
         });
 
         // don't display errors
@@ -67,8 +97,8 @@ HTMLWidgets.widget({
           e.preventDefault();
         });
 
-        // return shiny variables
-        $(el).on('afterUpdateRuleValue.queryBuilder', function(e, rule, error, value) {
+        // return shiny variables on events
+        $(el).on('afterDeleteGroup.queryBuilder afterDeleteRule.queryBuilder afterUpdateRuleValue.queryBuilder afterUpdateRuleFilter.queryBuilder afterUpdateRuleOperator.queryBuilder  afterUpdateGroupCondition.queryBuilder', function(e, rule, error, value) {
           Shiny.onInputChange(el.id + '_out', $(el).queryBuilder('getRules'));
           Shiny.onInputChange(el.id + '_validate', $(el).queryBuilder('validate'));
         });
