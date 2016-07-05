@@ -63,10 +63,24 @@ filterTable <- function(filters = NULL, data = NULL, output = c('table', 'text')
 #                                     rules = list(list(id = 'gear', type = 'string', input = 'select', operator = 'equal', value = '3'),
 #                                                  list(id = 'gear', type = 'string', input = 'select', operator = 'equal', value = '5')))))
 
-lookup <- function(f) {
-  l.operators <- list('AND' = '&', 'OR' = '|', 'equal' = '==', 'not_equal' = '!=',
-                      'less' = '<', 'less_or_equal' = '<=', 'greater' = '>', 'greater_or_equal' = '>=')
-  return(l.operators[[f]])
+# lookup <- function(f) {
+#   l.operators <- list('AND' = '&', 'OR' = '|', 'equal' = '==', 'not_equal' = '!=',
+#                       'less' = '<', 'less_or_equal' = '<=', 'greater' = '>', 'greater_or_equal' = '>=')
+#   return(l.operators[[f]])
+# }
+
+lookup <- function(id, operator, value) {
+  l.operators1 <- list('AND' = '&', 'OR' = '|', 'equal' = '==', 'not_equal' = '!=',
+                       'less' = '<', 'less_or_equal' = '<=', 'greater' = '>', 'greater_or_equal' = '>=')
+  l.operators2 <- list('begins_with' = 'startsWith', 'not_begins_with' = '!startsWith',
+                       'ends_with' = 'endsWith', 'not_ends_with' = '!endsWith')
+
+  if (operator %in% names(l.operators1)) {
+    return(paste(id, l.operators1[[operator]], value))
+  }
+  if (operator %in% names(l.operators2)) {
+    return(paste0(l.operators2[[operator]], '(', id, ', \"', value, '\")'))
+  }
 }
 
 ## recursive function to process filter
@@ -77,9 +91,11 @@ recurseFilter <- function(filter = NULL) {
       fs <- paste(fs, paste0('(', recurseFilter(filter = filter$rules[[i]]), ')'), sep = paste0(' ', lookup(filter$condition), ' '))
     } else {
       if (is.null(fs)) {
-        fs <- paste(filter$rules[[i]]$id, lookup(filter$rules[[i]]$operator), filter$rules[[i]]$value)
+#        fs <- paste(filter$rules[[i]]$id, lookup(filter$rules[[i]]$operator), filter$rules[[i]]$value)
+        fs <- lookup(filter$rules[[i]]$id, filter$rules[[i]]$operator, filter$rules[[i]]$value)
       } else {
-        fs <- paste(fs, paste(filter$rules[[i]]$id, lookup(filter$rules[[i]]$operator), filter$rules[[i]]$value), sep = paste0(' ', lookup(filter$condition), ' '))
+#        fs <- paste(fs, paste(filter$rules[[i]]$id, lookup(filter$rules[[i]]$operator), filter$rules[[i]]$value), sep = paste0(' ', lookup(filter$condition), ' '))
+        fs <- paste(fs, lookup(filter$rules[[i]]$id, filter$rules[[i]]$operator, filter$rules[[i]]$value), sep = paste0(' ', lookup(filter$condition), ' '))
       }
     }
   }
