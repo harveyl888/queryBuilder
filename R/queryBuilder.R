@@ -74,12 +74,16 @@ lookup <- function(id, operator, value) {
                        'less' = '<', 'less_or_equal' = '<=', 'greater' = '>', 'greater_or_equal' = '>=')
   l.operators2 <- list('begins_with' = 'startsWith', 'not_begins_with' = '!startsWith',
                        'ends_with' = 'endsWith', 'not_ends_with' = '!endsWith')
+  l.operators3 <- list('contains' = 'grepl', 'not_contains' = '!grepl')
 
   if (operator %in% names(l.operators1)) {
     return(paste(id, l.operators1[[operator]], value))
   }
   if (operator %in% names(l.operators2)) {
     return(paste0(l.operators2[[operator]], '(', id, ', \"', value, '\")'))
+  }
+  if (operator %in% names(l.operators3)) {
+    return(paste0(l.operators3[[operator]], '(\"', value, '\", ', id, ')'))
   }
 }
 
