@@ -8,13 +8,13 @@ library(queryBuilder)
 server <- function(input, output) {
   output$q1 <- renderQueryBuilder({
     queryBuilder(data = mtcars, filters = list(list(name = 'mpg', type = 'double', min=min(mtcars$mpg), max=max(mtcars$mpg), step=0.1),
-                                               list(name = 'disp', type = 'integer', min=60, max=200, step=1),
-                                               list(name = 'gear', type = 'string', input = 'select'))
+                                               list(name = 'disp', type = 'integer', min=60, step=1),
+                                               list(name = 'gear', type = 'string', input = 'select', operators = c('equal', 'not_equal')))
     )
   })
 
-  output$txt1 <- renderPrint(filterTable(input$q1_out, mtcars, 'text'))
-  output$txt2 <- renderPrint(jsonlite::prettify(input$q1_filters))
+  output$txt1 <- renderPrint(jsonlite::prettify(input$q1_filters))
+  output$txt2 <- renderPrint(filterTable(input$q1_out, mtcars, 'text'))
 
   output$dt <- renderTable({
     req(input$q1_validate)

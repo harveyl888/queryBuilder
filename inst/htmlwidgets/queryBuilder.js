@@ -15,6 +15,10 @@ HTMLWidgets.widget({
         // for debugging
         window.widgetInput = x;
 
+        var opObj = {};
+        opObj.text = '"equal", "not_equal"';
+        opObj.numeric = '"equal", "not_equal", "less", "less_or_equal", "greater", "greater_or_equal"';
+
 
         // Generate json strings from x.data
         var jsonString;  // string to store json-formatted filter
@@ -46,6 +50,20 @@ HTMLWidgets.widget({
               jsonString += addjsonSelect.join(", ") + '}';
             }
           }
+
+          if (i.hasOwnProperty("operators")) {
+            var addjsonOperators = [];
+            for (var op in i.operators) {
+              addjsonOperators.push('"' + i.operators[op] + '"');
+            }
+            jsonString += ', "operators": [' + addjsonOperators.join(", ") + ']';
+          } else if (i.type == 'integer') {
+            jsonString += ', "operators": [' + opObj.numeric + ']';
+          } else if (i.type == 'text') {
+            jsonString += ', "operators": [' + opObj.text + ']';
+          }
+
+
           jsonString += '}';
           filter.push(jsonString);  // add this filter to the filter array
         });
