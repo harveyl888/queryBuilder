@@ -16,7 +16,9 @@ queryBuilder <- function(data = NULL, filters = list(), width = NULL, height = N
 
   for (i in 1:length(filters)) {
     if (filters[[i]]['input'] == 'select') {
-      filters[[i]][['values']] <- unique(data[[filters[[i]][['name']]]])
+      uniqueVals <- unique(data[[filters[[i]][['name']]]])
+      uniqueVals <- uniqueVals[!is.na(uniqueVals)]  # get rid of NA value if present
+      filters[[i]][['values']] <- uniqueVals
     }
   }
 
