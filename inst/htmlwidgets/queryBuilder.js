@@ -17,7 +17,7 @@ HTMLWidgets.widget({
 
         var opObj = {};
         opObj.text = '"equal", "not_equal"';
-        opObj.numeric = '"equal", "not_equal", "less", "less_or_equal", "greater", "greater_or_equal"';
+        opObj.numeric = '"equal", "not_equal", "less", "less_or_equal", "greater", "greater_or_equal", "between", "not_between"';
 
 
         // Generate json strings from x.data

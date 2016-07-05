@@ -75,6 +75,7 @@ lookup <- function(id, operator, value) {
   l.operators2 <- list('begins_with' = 'startsWith', 'not_begins_with' = '!startsWith',
                        'ends_with' = 'endsWith', 'not_ends_with' = '!endsWith')
   l.operators3 <- list('contains' = 'grepl', 'not_contains' = '!grepl')
+  l.operators4 <- list('between' = 'between', 'not_between' = 'not_between')
 
   if (operator %in% names(l.operators1)) {
     return(paste(id, l.operators1[[operator]], value))
@@ -84,6 +85,13 @@ lookup <- function(id, operator, value) {
   }
   if (operator %in% names(l.operators3)) {
     return(paste0(l.operators3[[operator]], '(\"', value, '\", ', id, ')'))
+  }
+  if (operator %in% names(l.operators4)) {
+    if (operator == 'between') {
+      return(paste0(id, ' > ', range(as.numeric(value))[[1]], ' & ', id, ' < ', range(as.numeric(value))[[2]]))
+    } else {
+      return(paste0('!(', id, ' > ', range(as.numeric(value))[[1]], ' & ', id, ' < ', range(as.numeric(value))[[2]], ')'))
+    }
   }
 }
 
