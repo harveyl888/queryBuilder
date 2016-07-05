@@ -70,12 +70,16 @@ filterTable <- function(filters = NULL, data = NULL, output = c('table', 'text')
 #' @return string representation of a single filter
 #'
 lookup <- function(id, operator, value) {
-  l.operators1 <- list('equal' = '==', 'not_equal' = '!=',
-                       'less' = '<', 'less_or_equal' = '<=', 'greater' = '>', 'greater_or_equal' = '>=')
-  l.operators2 <- list('begins_with' = 'startsWith', 'not_begins_with' = '!startsWith',
-                       'ends_with' = 'endsWith', 'not_ends_with' = '!endsWith')
+  ## triple style operator, eg a = 1
+  l.operators1 <- list('equal' = '==', 'not_equal' = '!=', 'less' = '<', 'less_or_equal' = '<=', 'greater' = '>', 'greater_or_equal' = '>=')
+  ## functional style operator, eg startswith(a, value)
+  l.operators2 <- list('begins_with' = 'startsWith', 'not_begins_with' = '!startsWith', 'ends_with' = 'endsWith', 'not_ends_with' = '!endsWith')
+  ## grep style operator, eg grepl(value, a)
   l.operators3 <- list('contains' = 'grepl', 'not_contains' = '!grepl')
+  ## two-value style operator, eg a > 10 & a < 20
   l.operators4 <- list('between' = 'between', 'not_between' = 'not_between')
+  ## simple boolean function, eg is.na(a)
+  l.operators5 <- list('is_na' = 'is.na', 'is_not_na' = '!is.na')
 
   if (operator %in% names(l.operators1)) {
     return(paste(id, l.operators1[[operator]], value))
@@ -92,6 +96,9 @@ lookup <- function(id, operator, value) {
     } else {
       return(paste0('!(', id, ' > ', range(as.numeric(value))[[1]], ' & ', id, ' < ', range(as.numeric(value))[[2]], ')'))
     }
+  }
+  if (operator %in% names(l.operators5)) {
+    return(paste0(l.operators5[[operator]], '(', id, ')'))
   }
 }
 

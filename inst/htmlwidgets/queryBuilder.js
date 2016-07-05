@@ -73,12 +73,24 @@ HTMLWidgets.widget({
         // for debugging
         window.jsonFilter = jsonFilter;
 
+        var myOperators = ["equal", "not_equal"];
+        var operator = [];
+        for (var j in myOperators) {
+          operator.push('{ "type": "' + myOperators[j] + '" }');
+        }
+        operator.push('{ "type": "is_not_na", "nb_inputs": "0", "apply_to": ["number", "string", "datetime", "boolean"] }');
+                operator.push('{ "type": "is_na", "nb_inputs": "0", "apply_to": ["number", "string", "datetime", "boolean"] }');
+
+        var jsonOperators =  JSON.parse("[" + operator.join() + "]");  // parse all the operators
+
         // initialize validate status to false
         Shiny.onInputChange(el.id + '_validate', false);
 
         // build the query
         $(el).queryBuilder({
-          filters: jsonFilter
+          filters: jsonFilter,
+          operators: jsonOperators,
+          lang_code: '"en"'
         });
 
         // don't display errors
