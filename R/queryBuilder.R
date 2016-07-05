@@ -35,6 +35,14 @@ queryBuilder <- function(data = NULL, filters = list(), width = NULL, height = N
   )
 }
 
+#' filterTable
+#'
+#' filter a data frame using the output of a queryBuilder htmlWidget
+#'
+#' @param filters output from queryBuilder htmlWidget sent from shiny app as \code{input$el_out} where \code{el} is the htmlWidget element
+#' @param data data frame to filter
+#' @param output string return either a filtered data frame (table) or a text representation of the filter (text)
+#'
 #' @import dplyr
 #' @export
 filterTable <- function(filters = NULL, data = NULL, output = c('table', 'text')) {
@@ -52,23 +60,15 @@ filterTable <- function(filters = NULL, data = NULL, output = c('table', 'text')
 }
 
 
-# testData1 <- list(condition = 'AND',
-#                   rules = list(list(id = 'disp', type = 'integer', input = 'text', operator = 'equal', value = 2),
-#                   list(id = 'gear', type = 'string', input = 'select', operator = 'equal', value = '3')))
-#
-# testData2 <- list(condition = 'AND',
-#                   rules = list(list(id = 'disp', type = 'integer', input = 'text', operator = 'equal', value = 2),
-#                                list(id = 'mpg', type = 'string', input = 'text', operator = 'equal', value = '4'),
-#                                list(condition = 'OR',
-#                                     rules = list(list(id = 'gear', type = 'string', input = 'select', operator = 'equal', value = '3'),
-#                                                  list(id = 'gear', type = 'string', input = 'select', operator = 'equal', value = '5')))))
-
-# lookup <- function(f) {
-#   l.operators <- list('AND' = '&', 'OR' = '|', 'equal' = '==', 'not_equal' = '!=',
-#                       'less' = '<', 'less_or_equal' = '<=', 'greater' = '>', 'greater_or_equal' = '>=')
-#   return(l.operators[[f]])
-# }
-
+#' lookup
+#'
+#' internal function to create a filter condition based on id, operator and value
+#'
+#' @param id data frame column id
+#' @param operator filter operator as defined within queryBuilder
+#' @param value filter value
+#' @return string representation of a single filter
+#'
 lookup <- function(id, operator, value) {
   l.operators1 <- list('equal' = '==', 'not_equal' = '!=',
                        'less' = '<', 'less_or_equal' = '<=', 'greater' = '>', 'greater_or_equal' = '>=')
@@ -88,8 +88,13 @@ lookup <- function(id, operator, value) {
 }
 
 
-
-## recursive function to process filter
+#' recurseFilter
+#'
+#' internal recursive function to process filter
+#'
+#' @param filter filters output from queryBuilder htmlWidget
+#' @return string representation of all filters combined
+#'
 recurseFilter <- function(filter = NULL) {
   condition <- list('AND' = '&', 'OR' = '|')
   fs <- NULL
@@ -108,7 +113,6 @@ recurseFilter <- function(filter = NULL) {
   }
   return(fs)
 }
-#recurseFilter(testData2)
 
 
 
