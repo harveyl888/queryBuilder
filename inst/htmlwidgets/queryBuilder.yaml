@@ -12,3 +12,7 @@ dependencies:
   src: htmlwidgets/lib
   script: ./js/query-builder.min.js
   stylesheet: ./css/query-builder.default.min.css
+- name: queryBuilderLang
+  version: 2.3.3
+  src: htmlwidgets/lib
+  script: ./i18n/query-builder.en.js

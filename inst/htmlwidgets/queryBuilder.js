@@ -89,8 +89,7 @@ HTMLWidgets.widget({
         // build the query
         $(el).queryBuilder({
           filters: jsonFilter,
-          operators: jsonOperators,
-          lang_code: '"en"'
+          operators: jsonOperators
         });
 
         // don't display errors
