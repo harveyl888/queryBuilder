@@ -16,8 +16,8 @@ HTMLWidgets.widget({
         window.widgetInput = x;
 
         var opObj = {};
-        opObj.text = '"equal", "not_equal"';
-        opObj.numeric = '"equal", "not_equal", "less", "less_or_equal", "greater", "greater_or_equal", "between", "not_between"';
+        opObj.text = '"equal", "not_equal", "begins_with", "not_begins_with", "ends_with", "not_ends_with", "contains", "not_contains", "is_na", "is_not_na"';
+        opObj.numeric = '"equal", "not_equal", "less", "less_or_equal", "greater", "greater_or_equal", "between", "not_between", "is_na", "is_not_na"';
 
 
         // Generate json strings from x.data
@@ -73,7 +73,7 @@ HTMLWidgets.widget({
         // for debugging
         window.jsonFilter = jsonFilter;
 
-        var myOperators = ["equal", "not_equal"];
+        var myOperators = ["equal", "not_equal", "less", "less_or_equal", "greater", "greater_or_equal", "between", "not_between", "begins_with", "not_begins_with", "ends_with", "not_ends_with", "contains", "not_contains"];
         var operator = [];
         for (var j in myOperators) {
           operator.push('{ "type": "' + myOperators[j] + '" }');

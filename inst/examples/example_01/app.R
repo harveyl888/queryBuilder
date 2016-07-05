@@ -14,8 +14,8 @@ server <- function(input, output) {
   output$q1 <- renderQueryBuilder({
     queryBuilder(data = df.data, filters = list(list(name = 'mpg', type = 'double', min=min(mtcars$mpg), max=max(mtcars$mpg), step=0.1),
                                                 list(name = 'disp', type = 'integer', min=60, step=1),
-                                                list(name = 'gear', type = 'string', input = 'select', operators = c('equal', 'not_equal', 'is_na', 'is_not_na')),
-                                                list(name = 'name', type = 'string', operators = c('begins_with', 'not_begins_with', 'ends_with', 'not_ends_with', 'contains', 'not_contains')))
+                                                list(name = 'gear', type = 'string', input = 'select'),
+                                                list(name = 'name', type = 'string'))
     )
   })
 
