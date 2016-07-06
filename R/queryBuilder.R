@@ -15,7 +15,7 @@ queryBuilder <- function(data = NULL, filters = list(), width = NULL, height = N
   if (!all(sapply(filters, function(x) x['name']) %in% names(data))) return()
 
   for (i in 1:length(filters)) {
-    if (filters[[i]]['input'] == 'select') {
+    if (filters[[i]]['input'] %in% c('select', 'selectize')) {
       uniqueVals <- unique(data[[filters[[i]][['name']]]])
       uniqueVals <- sort(uniqueVals[!is.na(uniqueVals)])  # sort and get rid of NA value if present
       filters[[i]][['values']] <- uniqueVals
@@ -82,6 +82,8 @@ lookup <- function(id, operator, value) {
   l.operators4 <- list('between' = 'between', 'not_between' = 'not_between')
   ## simple boolean function, eg is.na(a)
   l.operators5 <- list('is_na' = 'is.na', 'is_not_na' = '!is.na')
+  ## operators acting on multiple values
+  l.operators6 <- list('in' = '%in%', 'not_in' = '!%in%')
 
   if (operator %in% names(l.operators1)) {
     return(paste(id, l.operators1[[operator]], value))
@@ -100,10 +102,18 @@ lookup <- function(id, operator, value) {
     }
   }
   if (operator %in% names(l.operators5)) {
-    return(paste0(l.operators5[[operator]], '(', id, ')'))
+    return(paste0(id, l.operators5[[operator]], '(', id, ')'))
+  }
+  if (operator %in% names(l.operators6)) {
+    if (operator == 'in') {
+      return(paste0(id, ' %in% c(', paste(value, collapse = ', '), ')'))
+    } else {
+      return(paste0('!(', id, ' %in% c(', paste(value, collapse = ', '), '))'))
+    }
   }
 }
 
+"%ni%" <- Negate("%in%")
 
 #' recurseFilter
 #'

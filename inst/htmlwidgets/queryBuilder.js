@@ -26,7 +26,9 @@ HTMLWidgets.widget({
         x.data.forEach(function(i) {
           jsonString = '{ "id": "' + i.name + '", "label": "' + i.name + '", "type": "' + i.type + '"';
           if (i.hasOwnProperty("input")) {
-            jsonString += ', "input": "' + i.input + '"';
+            if (i.input != 'selectize') {
+              jsonString += ', "input": "' + i.input + '"';
+            }
           }
           if (i.type == 'integer' | i.type == 'double') {
             var myProps = ["min", "max", "step"];
@@ -41,20 +43,31 @@ HTMLWidgets.widget({
           }
           if (i.input == 'select') {
             if (i.hasOwnProperty("values")) {
-//              jsonString += ', "values": {';
               jsonString += ', "values": [';
               var addjsonSelect = [];
 
               for (var k = 0; k < i.values.length; k++) {
                 addjsonSelect.push('"' + i.values[k] + '"');
-//                addjsonSelect.push('"' + i.values[k] + '": "' + i.values[k] + '"');
               }
-//              jsonString += addjsonSelect.join(", ") + '}';
               jsonString += addjsonSelect.join(", ") + ']';
+            }
+          } else if (i.input == 'selectize') {
+            if (i.hasOwnProperty("values")) {
+              jsonString += ', "plugin": "selectize", "plugin_config": { ';
+              jsonString += '"valueField": "id", "labelField": "id", "maxItems": "null", "create": "false", ';
+              jsonString += '"options": [';
+              var addjsonSelectize = [];
+              for (var k1 = 0; k1 < i.values.length; k1++) {
+                addjsonSelectize.push('{"id": "' + i.values[k1] + '"}');
+              }
+              jsonString += addjsonSelectize.join(", ") + '] }';
             }
           }
 
-          if (i.hasOwnProperty("operators")) {
+
+          if (i.input == 'selectize') {
+            jsonString += ', "operators": [ "in", "not_in" ]';
+          } else if (i.hasOwnProperty("operators")) {
             var addjsonOperators = [];
             for (var op in i.operators) {
               addjsonOperators.push('"' + i.operators[op] + '"');
@@ -76,7 +89,7 @@ HTMLWidgets.widget({
         // for debugging
         window.jsonFilter = jsonFilter;
 
-        var myOperators = ["equal", "not_equal", "less", "less_or_equal", "greater", "greater_or_equal", "between", "not_between", "begins_with", "not_begins_with", "ends_with", "not_ends_with", "contains", "not_contains"];
+        var myOperators = ["equal", "not_equal", "less", "less_or_equal", "greater", "greater_or_equal", "between", "not_between", "begins_with", "not_begins_with", "ends_with", "not_ends_with", "contains", "not_contains", "in", "not_in"];
         var operator = [];
         for (var j in myOperators) {
           operator.push('{ "type": "' + myOperators[j] + '" }');

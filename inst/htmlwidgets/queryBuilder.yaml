@@ -16,3 +16,8 @@ dependencies:
   version: 2.3.3
   src: htmlwidgets/lib
   script: ./i18n/query-builder.en.js
+- name: selectize
+  version: 0.12.2
+  src: htmlwidgets/lib
+  script: ./plugins/selectize/selectize.min.js
+  stylesheet: ./plugins/selectize/selectize.bootstrap3.css
