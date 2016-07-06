@@ -102,6 +102,14 @@ HTMLWidgets.widget({
         // initialize validate status to false
         Shiny.onInputChange(el.id + '_validate', false);
 
+        // add a fix for selectize
+        $(el).on('afterCreateRuleInput.queryBuilder', function(e, rule) {
+                                                        if (rule.filter.plugin == 'selectize') {
+                                                        rule.$el.find('.rule-value-container').css('min-width', '200px')
+                                                        .find('.selectize-control').removeClass('form-control');
+                                                      }
+                                                    });
+
         // build the query
         $(el).queryBuilder({
           filters: jsonFilter,
