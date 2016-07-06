@@ -6,8 +6,6 @@ HTMLWidgets.widget({
 
   factory: function(el, width, height) {
 
-    // TODO: define shared variables for this instance
-
     return {
 
       renderValue: function(x) {
@@ -30,9 +28,9 @@ HTMLWidgets.widget({
               jsonString += ', "input": "' + i.input + '"';
             }
           }
-          if (i.type == 'integer' | i.type == 'double') {
+          if (i.type == 'integer' || i.type == 'double') {
             var myProps = ["min", "max", "step"];
-            if (i.hasOwnProperty("min") | i.hasOwnProperty("max") | i.hasOwnProperty("step")) {
+            if (i.hasOwnProperty("min") || i.hasOwnProperty("max") || i.hasOwnProperty("step")) {
               jsonString += ', "validation": {';
               var addjsonNum = [];
               for (var j in myProps) {
@@ -73,7 +71,7 @@ HTMLWidgets.widget({
               addjsonOperators.push('"' + i.operators[op] + '"');
             }
             jsonString += ', "operators": [' + addjsonOperators.join(", ") + ']';
-          } else if (i.type == 'integer' | i.type == 'double') {
+          } else if (i.type == 'integer' || i.type == 'double') {
             jsonString += ', "operators": [' + opObj.numeric + ']';
           } else if (i.type == 'text') {
             jsonString += ', "operators": [' + opObj.text + ']';

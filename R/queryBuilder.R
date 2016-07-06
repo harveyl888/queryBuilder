@@ -113,8 +113,6 @@ lookup <- function(id, operator, value) {
   }
 }
 
-"%ni%" <- Negate("%in%")
-
 #' recurseFilter
 #'
 #' internal recursive function to process filter
