@@ -41,13 +41,16 @@ HTMLWidgets.widget({
           }
           if (i.input == 'select') {
             if (i.hasOwnProperty("values")) {
-              jsonString += ', "values": {';
+//              jsonString += ', "values": {';
+              jsonString += ', "values": [';
               var addjsonSelect = [];
 
               for (var k = 0; k < i.values.length; k++) {
-                addjsonSelect.push('"' + i.values[k] + '": "' + i.values[k] + '"');
+                addjsonSelect.push('"' + i.values[k] + '"');
+//                addjsonSelect.push('"' + i.values[k] + '": "' + i.values[k] + '"');
               }
-              jsonString += addjsonSelect.join(", ") + '}';
+//              jsonString += addjsonSelect.join(", ") + '}';
+              jsonString += addjsonSelect.join(", ") + ']';
             }
           }
 
