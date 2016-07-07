@@ -102,7 +102,7 @@ lookup <- function(id, operator, value) {
     }
   }
   if (operator %in% names(l.operators5)) {
-    return(paste0(id, l.operators5[[operator]], '(', id, ')'))
+    return(paste0(l.operators5[[operator]], '(', id, ')'))
   }
   if (operator %in% names(l.operators6)) {
     if (operator == 'in') {

@@ -65,6 +65,8 @@ HTMLWidgets.widget({
 
           if (i.input == 'selectize') {
             jsonString += ', "operators": [ "in", "not_in" ]';
+          } else if (i.input == 'select') {
+            jsonString += ', "operators": [ "equal", "not_equal", "is_na", "is_not_na" ]';
           } else if (i.hasOwnProperty("operators")) {
             var addjsonOperators = [];
             for (var op in i.operators) {
