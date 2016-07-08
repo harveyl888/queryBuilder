@@ -60,6 +60,8 @@ HTMLWidgets.widget({
               }
               jsonString += addjsonSelectize.join(", ") + '] }';
             }
+          } else if (i.type == 'date') {
+            jsonString += ', "plugin": "datepicker", "plugin_config": { "format": "yyyy/mm/dd", "todayBtn": "linked", "todayHighlight": "true", "autoclose": "true" }';
           }
 
 
@@ -73,7 +75,7 @@ HTMLWidgets.widget({
               addjsonOperators.push('"' + i.operators[op] + '"');
             }
             jsonString += ', "operators": [' + addjsonOperators.join(", ") + ']';
-          } else if (i.type == 'integer' || i.type == 'double') {
+          } else if (i.type == 'integer' || i.type == 'double' || i.type == 'date') {
             jsonString += ', "operators": [' + opObj.numeric + ']';
           } else if (i.type == 'text') {
             jsonString += ', "operators": [' + opObj.text + ']';

@@ -21,3 +21,8 @@ dependencies:
   src: htmlwidgets/lib
   script: ./plugins/selectize/selectize.min.js
   stylesheet: ./plugins/selectize/selectize.bootstrap3.css
+- name: datepicker
+  version: 1.7.0
+  src: htmlwidgets/lib
+  script: ./plugins/datepicker/bootstrap-datepicker.min.js
+  stylesheet: ./plugins/datepicker/bootstrap-datepicker3.min.css

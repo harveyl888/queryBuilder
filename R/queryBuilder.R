@@ -96,9 +96,9 @@ lookup <- function(id, operator, value) {
   }
   if (operator %in% names(l.operators4)) {
     if (operator == 'between') {
-      return(paste0(id, ' > ', range(as.numeric(value))[[1]], ' & ', id, ' < ', range(as.numeric(value))[[2]]))
+      return(paste0(id, ' >= ', value[[1]], ' & ', id, ' <= ', value[[2]]))
     } else {
-      return(paste0('!(', id, ' > ', range(as.numeric(value))[[1]], ' & ', id, ' < ', range(as.numeric(value))[[2]], ')'))
+      return(paste0('!(', id, ' >= ', value[[1]], ' & ', id, ' <= ', value[[2]], ')'))
     }
   }
   if (operator %in% names(l.operators5)) {
@@ -127,10 +127,19 @@ recurseFilter <- function(filter = NULL) {
     if (typeof(filter$rules[[i]]$rules) == 'list') {
       fs <- paste(fs, paste0('(', recurseFilter(filter = filter$rules[[i]]), ')'), sep = paste0(' ', condition[[filter$condition]], ' '))
     } else {
-      if (is.null(fs)) {
-        fs <- lookup(filter$rules[[i]]$id, filter$rules[[i]]$operator, filter$rules[[i]]$value)
+      if (filter$rules[[i]]$type == 'date') {  # treat dates
+        if (length(filter$rules[[i]]$value) > 1) {
+          value <- lapply(filter$rules[[i]]$value, function(x) paste0('as.Date(\"', x, '\")'))  # date range
+        } else {
+          value <- paste0('as.Date(\"', filter$rules[[i]]$value, '\")')  # single date
+        }
       } else {
-        fs <- paste(fs, lookup(filter$rules[[i]]$id, filter$rules[[i]]$operator, filter$rules[[i]]$value), sep = paste0(' ', condition[[filter$condition]], ' '))
+        value = filter$rules[[i]]$value
+      }
+      if (is.null(fs)) {
+        fs <- lookup(filter$rules[[i]]$id, filter$rules[[i]]$operator, value)
+      } else {
+        fs <- paste(fs, lookup(filter$rules[[i]]$id, filter$rules[[i]]$operator, value), sep = paste0(' ', condition[[filter$condition]], ' '))
       }
     }
   }
