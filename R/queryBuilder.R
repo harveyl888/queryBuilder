@@ -127,17 +127,19 @@ recurseFilter <- function(filter = NULL) {
   condition <- list('AND' = '&', 'OR' = '|')
   fs <- NULL
   for (i in 1:length(filter$rules)) {
-    if (typeof(filter$rules[[i]]$rules) == 'list') {
+    if (typeof(filter$rules[[i]]$rules) == 'list') {  # nested filter group
       fs <- paste(fs, paste0('(', recurseFilter(filter = filter$rules[[i]]), ')'), sep = paste0(' ', condition[[filter$condition]], ' '))
     } else {
-      if (filter$rules[[i]]$type == 'date') {  # treat dates
+      if (is.null(filter$rules[[i]]$value)) {  # value is null when checking for NA
+        value <- NULL
+      } else if (filter$rules[[i]]$type == 'date') {  # treat dates
         if (length(filter$rules[[i]]$value) > 1) {
           value <- lapply(filter$rules[[i]]$value, function(x) paste0('as.Date(\"', x, '\")'))  # date range
         } else {
           value <- paste0('as.Date(\"', filter$rules[[i]]$value, '\")')  # single date
         }
       } else {
-        value = ifelse(is.null(filter$rules[[i]]$value), NULL, is.null(filter$rules[[i]]$value))
+        value = filter$rules[[i]]$value
       }
       if (is.null(fs)) {
         fs <- lookup(filter$rules[[i]]$id, filter$rules[[i]]$operator, value)
