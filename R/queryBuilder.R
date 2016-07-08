@@ -137,7 +137,7 @@ recurseFilter <- function(filter = NULL) {
           value <- paste0('as.Date(\"', filter$rules[[i]]$value, '\")')  # single date
         }
       } else {
-        value = filter$rules[[i]]$value
+        value = ifelse(is.null(filter$rules[[i]]$value), NULL, is.null(filter$rules[[i]]$value))
       }
       if (is.null(fs)) {
         fs <- lookup(filter$rules[[i]]$id, filter$rules[[i]]$operator, value)
