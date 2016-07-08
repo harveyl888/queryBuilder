@@ -8,6 +8,7 @@ library(queryBuilder)
 df.data <- mtcars
 df.data$name <- row.names(df.data)
 df.data$date <- sample(seq(as.Date('2016/01/01'), as.Date('2016/01/20'), by="day"), nrow(df.data), replace = TRUE)
+df.data$logical <- df.data$carb < 4
 df.data[2:3, 'gear'] <- NA
 
 server <- function(input, output) {
@@ -18,6 +19,7 @@ server <- function(input, output) {
                                                 list(name = 'gear', type = 'string', input = 'select'),
                                                 list(name = 'name', type = 'string'),
                                                 list(name = 'date', type = 'date'),
+                                                list(name = 'logical', type = 'boolean', input = 'radio'),
                                                 list(name = 'carb', type = 'string', input = 'selectize'))
     )
   })

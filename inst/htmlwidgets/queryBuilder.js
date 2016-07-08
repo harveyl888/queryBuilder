@@ -39,7 +39,7 @@ HTMLWidgets.widget({
               jsonString += addjsonNum.join() + '}';
             }
           }
-          if (i.input == 'select') {
+          if (i.input == 'select' || i.input == 'radio') {
             if (i.hasOwnProperty("values")) {
               jsonString += ', "values": [';
               var addjsonSelect = [];
@@ -67,7 +67,7 @@ HTMLWidgets.widget({
 
           if (i.input == 'selectize') {
             jsonString += ', "operators": [ "in", "not_in" ]';
-          } else if (i.input == 'select') {
+          } else if (i.input == 'select' || i.input == 'radio') {
             jsonString += ', "operators": [ "equal", "not_equal", "is_na", "is_not_na" ]';
           } else if (i.hasOwnProperty("operators")) {
             var addjsonOperators = [];
