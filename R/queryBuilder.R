@@ -128,7 +128,11 @@ recurseFilter <- function(filter = NULL) {
   fs <- NULL
   for (i in 1:length(filter$rules)) {
     if (typeof(filter$rules[[i]]$rules) == 'list') {  # nested filter group
-      fs <- paste(fs, paste0('(', recurseFilter(filter = filter$rules[[i]]), ')'), sep = paste0(' ', condition[[filter$condition]], ' '))
+      if (is.null(fs)) {
+        fs <- paste0('(', recurseFilter(filter = filter$rules[[i]]), ')')
+      } else {
+        fs <- paste(fs, paste0('(', recurseFilter(filter = filter$rules[[i]]), ')'), sep = paste0(' ', condition[[filter$condition]], ' '))
+      }
     } else {
       if (is.null(filter$rules[[i]]$value)) {  # value is null when checking for NA
         value <- NULL
