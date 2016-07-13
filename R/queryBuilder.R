@@ -8,7 +8,7 @@
 #' @import htmlwidgets
 #'
 #' @export
-queryBuilder <- function(data = NULL, filters = list(), width = NULL, height = NULL) {
+queryBuilder <- function(data = NULL, filters = list(), display_errors = TRUE, width = NULL, height = NULL) {
 
   if (is.null(data)) return()
   if (length(filters) == 0) return()
@@ -22,9 +22,12 @@ queryBuilder <- function(data = NULL, filters = list(), width = NULL, height = N
     }
   }
 
+  settings = list(display_errors = display_errors)
+
   # forward options using x
   x = list(
-    data = filters
+    data = filters,
+    settings = settings
   )
 
   # create widget
