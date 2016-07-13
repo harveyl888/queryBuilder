@@ -106,7 +106,9 @@ HTMLWidgets.widget({
         // build the query
         $(el).queryBuilder({
           filters: filter,
+          allow_empty: x.settings.allow_empty,
           display_errors: x.settings.display_errors,
+          display_empty_filter: x.settings.display_empty_filter,
           operators: operator
         });
 

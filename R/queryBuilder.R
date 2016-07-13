@@ -8,7 +8,13 @@
 #' @import htmlwidgets
 #'
 #' @export
-queryBuilder <- function(data = NULL, filters = list(), display_errors = TRUE, width = NULL, height = NULL) {
+queryBuilder <- function(data = NULL,
+                         filters = list(),
+                         allow_empty = FALSE,
+                         display_errors = TRUE,
+                         display_empty_filter = TRUE,
+                         width = NULL,
+                         height = NULL) {
 
   if (is.null(data)) return()
   if (length(filters) == 0) return()
@@ -22,7 +28,9 @@ queryBuilder <- function(data = NULL, filters = list(), display_errors = TRUE, w
     }
   }
 
-  settings = list(display_errors = display_errors)
+  settings = list(allow_empty = allow_empty,
+                  display_errors = display_errors,
+                  display_empty_filter = display_empty_filter)
 
   # forward options using x
   x = list(

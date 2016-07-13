@@ -23,7 +23,9 @@ server <- function(input, output) {
                                                 list(name = 'date', type = 'date'),
                                                 list(name = 'logical', type = 'boolean', input = 'radio'),
                                                 list(name = 'carb', type = 'string', input = 'selectize')),
-                 display_errors = FALSE
+                 allow_empty = TRUE,
+                 display_errors = TRUE,
+                 display_empty_filter = FALSE
     )
   })
 
