@@ -9,6 +9,7 @@
 #'
 #' @export
 queryBuilder <- function(data = NULL,
+                         autoassign = FALSE,
                          filters = list(),
                          default_condition = 'AND',
                          allow_empty = FALSE,
@@ -18,9 +19,30 @@ queryBuilder <- function(data = NULL,
                          height = NULL) {
 
   if (is.null(data)) return()
-  if (length(filters) == 0) return()
-  if (!all(sapply(filters, function(x) x['name']) %in% names(data))) return()
 
+  if(autoassign == TRUE) {
+    filters <- list()
+    columnTypes <- sapply(data, class)
+    for (i in 1:length(columnTypes)) {
+      c <- columnTypes[i]
+      if(c == 'numeric') {
+        filters[[length(filters) + 1]] <- list(name = names(c), type = 'double')
+      } else if (c == 'integer') {
+        filters[[length(filters) + 1]] <- list(name = names(c), type = 'integer')
+      } else if (c == 'character') {
+        filters[[length(filters) + 1]] <- list(name = names(c), type = 'string')
+      } else if (c == 'factor') {
+        filters[[length(filters) + 1]] <- list(name = names(c), type = 'string', input = 'selectize')
+      } else if (c == 'Date') {
+        filters[[length(filters) + 1]] <- list(name = names(c), type = 'date')
+      } else if (c == 'logical') {
+        filters[[length(filters) + 1]] <- list(name = names(c), type = 'boolean', input = 'radio')
+      }
+    }
+  } else {
+    if (length(filters) == 0) return()
+    if (!all(sapply(filters, function(x) x['name']) %in% names(data))) return()
+  }
   for (i in 1:length(filters)) {
     if (filters[[i]]['input'] %in% c('select', 'selectize', 'radio')) {
       uniqueVals <- unique(data[[filters[[i]][['name']]]])
@@ -28,6 +50,7 @@ queryBuilder <- function(data = NULL,
       filters[[i]][['values']] <- uniqueVals
     }
   }
+
 
   settings = list(default_condition = default_condition,
                   allow_empty = allow_empty,

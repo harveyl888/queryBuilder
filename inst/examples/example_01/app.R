@@ -9,6 +9,7 @@ df.data <- mtcars
 df.data$name <- row.names(df.data)
 df.data$nameFactor <- as.factor(df.data$name)
 df.data$date <- sample(seq(as.Date('2016/01/01'), as.Date('2016/01/20'), by="day"), nrow(df.data), replace = TRUE)
+df.data$vs <- as.integer(df.data$vs)
 df.data$logical <- df.data$carb < 4
 df.data[2:3, 'gear'] <- NA
 
@@ -23,6 +24,7 @@ server <- function(input, output) {
                                                 list(name = 'date', type = 'date'),
                                                 list(name = 'logical', type = 'boolean', input = 'radio'),
                                                 list(name = 'carb', type = 'string', input = 'selectize')),
+                 autoassign = TRUE,
                  default_condition = 'OR',
                  allow_empty = TRUE,
                  display_errors = TRUE,
@@ -32,7 +34,10 @@ server <- function(input, output) {
 
 #  output$txt1 <- renderPrint(jsonlite::prettify(input$q1_filters))
 #  output$txt2 <- renderPrint(input$q1_out)
-  output$txt2 <- renderPrint(filterTable(input$q1_out, df.data, 'text'))
+  output$txt2 <- renderPrint({
+    req(input$q1_validate)
+    cat(filterTable(input$q1_out, df.data, 'text'))
+  })
 
   output$dt <- renderTable({
     req(input$q1_validate)
