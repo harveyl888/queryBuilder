@@ -14,92 +14,79 @@ HTMLWidgets.widget({
         window.widgetInput = x;
 
         var opObj = {};
-        opObj.text = '"equal", "not_equal", "begins_with", "not_begins_with", "ends_with", "not_ends_with", "contains", "not_contains", "is_na", "is_not_na"';
-        opObj.numeric = '"equal", "not_equal", "less", "less_or_equal", "greater", "greater_or_equal", "between", "not_between", "is_na", "is_not_na"';
+        opObj.text = ['equal', 'not_equal', 'begins_with', 'not_begins_with', 'ends_with', 'not_ends_with', 'contains', 'not_contains', 'is_na', 'is_not_na'];
+        opObj.numeric = ['equal', 'not_equal', 'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between', 'not_between', 'is_na', 'is_not_na'];
 
 
-        // Generate json strings from x.data
-        var jsonString;  // string to store json-formatted filter
-        var filter = [];  // array to store all the filters
+        var filter = [];
         x.data.forEach(function(i) {
-          jsonString = '{ "id": "' + i.name + '", "label": "' + i.name + '", "type": "' + i.type + '"';
-          if (i.hasOwnProperty("input")) {
+          var myFilter = {};
+          myFilter.id = i.name;
+          myFilter.label = i.name;
+          myFilter.type = i.type;
+          if (i.hasOwnProperty('input')) {
             if (i.input != 'selectize') {
-              jsonString += ', "input": "' + i.input + '"';
+              myFilter.input = i.input;
             }
           }
           if (i.type == 'integer' || i.type == 'double') {
-            var myProps = ["min", "max", "step"];
-            if (i.hasOwnProperty("min") || i.hasOwnProperty("max") || i.hasOwnProperty("step")) {
-              jsonString += ', "validation": {';
-              var addjsonNum = [];
+            var myProps = ['min', 'max', 'step'];
+            if (i.hasOwnProperty('min') || i.hasOwnProperty('max') || i.hasOwnProperty('step')) {
+              var filterValidation = {};
               for (var j in myProps) {
-                if (i.hasOwnProperty(myProps[j])) { addjsonNum.push('"' + myProps[j] + '": ' + i[myProps[j]]); }
+                if (i.hasOwnProperty(myProps[j])) { filterValidation[myProps[j]] = i[myProps[j]]; }
               }
-              jsonString += addjsonNum.join() + '}';
+              myFilter.validation = filterValidation;
             }
           }
           if (i.input == 'select' || i.input == 'radio') {
-            if (i.hasOwnProperty("values")) {
-              jsonString += ', "values": [';
-              var addjsonSelect = [];
-
+            if (i.hasOwnProperty('values')) {
+              var filterValues = [];
               for (var k = 0; k < i.values.length; k++) {
-                addjsonSelect.push('"' + i.values[k] + '"');
+                filterValues.push(i.values[k]);
               }
-              jsonString += addjsonSelect.join(", ") + ']';
+              myFilter.values = filterValues;
             }
-          } else if (i.input == 'selectize') {
-            if (i.hasOwnProperty("values")) {
-              jsonString += ', "plugin": "selectize", "plugin_config": { ';
-              jsonString += '"valueField": "id", "labelField": "id", "maxItems": "null", "create": "false", ';
-              jsonString += '"options": [';
-              var addjsonSelectize = [];
-              for (var k1 = 0; k1 < i.values.length; k1++) {
-                addjsonSelectize.push('{"id": "' + i.values[k1] + '"}');
-              }
-              jsonString += addjsonSelectize.join(", ") + '] }';
+         } else if (i.input == 'selectize') {
+            if (i.hasOwnProperty('values')) {
+              myFilter.plugin = 'selectize';
+              selectizeOptions = [];
+              i.values.forEach(function(x) { selectizeOptions.push({ id: x })});
+              myFilter.plugin_config = { "valueField" : "id", "labelField" : "id", "maxItems" : null, "create" : false, "options" : selectizeOptions };
+              myFilter.valueGetter = function(rule) { return rule.$el.find('.selectized').selectize()[0].selectize.items; };
             }
-          } else if (i.type == 'date') {
-            jsonString += ', "plugin": "datepicker", "plugin_config": { "format": "yyyy/mm/dd", "todayBtn": "linked", "todayHighlight": "true", "autoclose": "true" }';
+         } else if (i.type == 'date') {
+           myFilter.plugin = 'datepicker';
+           myFilter.plugin_config = { "format" : "yyyy/mm/dd", "todayBtn" : "linked", "todayHighlight" : true, "autoclose" : true };
           }
 
-
+          // Add operators to filter
           if (i.input == 'selectize') {
-            jsonString += ', "operators": [ "in", "not_in" ]';
+            myFilter.operators = ['in', 'not_in'];
           } else if (i.input == 'select' || i.input == 'radio') {
-            jsonString += ', "operators": [ "equal", "not_equal", "is_na", "is_not_na" ]';
-          } else if (i.hasOwnProperty("operators")) {
-            var addjsonOperators = [];
-            for (var op in i.operators) {
-              addjsonOperators.push('"' + i.operators[op] + '"');
-            }
-            jsonString += ', "operators": [' + addjsonOperators.join(", ") + ']';
+            myFilter.operators = ['equal', 'not_equal', 'is_na', 'is_not_na'];
+          } else if (i.hasOwnProperty('operators')) {
+            myFilter.operators = i.operators;
           } else if (i.type == 'integer' || i.type == 'double' || i.type == 'date') {
-            jsonString += ', "operators": [' + opObj.numeric + ']';
+            myFilter.operators = opObj.numeric;
           } else if (i.type == 'text') {
-            jsonString += ', "operators": [' + opObj.text + ']';
+            myFilter.operators = opObj.text;
           }
-
-
-          jsonString += '}';
-          filter.push(jsonString);  // add this filter to the filter array
+          filter.push(myFilter);
         });
-        var jsonFilter = JSON.parse("[" + filter.join() + "]");  // parse all the filters
-        Shiny.onInputChange(el.id + '_filters', '[' + filter.join() + ']');
 
         // for debugging
-        window.jsonFilter = jsonFilter;
+        window.jsonFilter = filter;
 
-        var myOperators = ["equal", "not_equal", "less", "less_or_equal", "greater", "greater_or_equal", "between", "not_between", "begins_with", "not_begins_with", "ends_with", "not_ends_with", "contains", "not_contains", "in", "not_in"];
+        // Add global operators list
+        var myOperators = ['equal', 'not_equal', 'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between', 'not_between', 'begins_with', 'not_begins_with', 'ends_with', 'not_ends_with', 'contains', 'not_contains', 'in', 'not_in'];
         var operator = [];
-        for (var j in myOperators) {
-          operator.push('{ "type": "' + myOperators[j] + '" }');
-        }
-        operator.push('{ "type": "is_not_na", "nb_inputs": "0", "apply_to": ["number", "string", "datetime", "boolean"] }');
-                operator.push('{ "type": "is_na", "nb_inputs": "0", "apply_to": ["number", "string", "datetime", "boolean"] }');
+        myOperators.forEach(function(x) { operator.push({ type : x}) });
+        operator.push({ type: "is_not_na", "nb_inputs": "0", "apply_to": ["number", "string", "datetime", "boolean"] });
+        operator.push({ type: "is_na", "nb_inputs": "0", "apply_to": ["number", "string", "datetime", "boolean"] });
 
-        var jsonOperators =  JSON.parse("[" + operator.join() + "]");  // parse all the operators
+        // return filter as stringified JSON
+        Shiny.onInputChange(el.id + '_filters', JSON.stringify(filter));
 
         // initialize validate status to false
         Shiny.onInputChange(el.id + '_validate', false);
@@ -112,16 +99,21 @@ HTMLWidgets.widget({
                                                       }
                                                     });
 
+        // for debugging
+        window.filterout = filter;
+        window.operatorout = operator;
+
         // build the query
         $(el).queryBuilder({
-          filters: jsonFilter,
-          operators: jsonOperators
+          filters: filter,
+          operators: operator
         });
 
+
         // don't display errors
-        $(el).on('validationError.queryBuilder', function(e, rule, error, value) {
-          e.preventDefault();
-        });
+ //       $(el).on('validationError.queryBuilder', function(e, rule, error, value) {
+//          e.preventDefault();
+//        });
 
         // return shiny variables on events
         $(el).on('afterDeleteGroup.queryBuilder afterDeleteRule.queryBuilder afterUpdateRuleValue.queryBuilder afterUpdateRuleFilter.queryBuilder afterUpdateRuleOperator.queryBuilder  afterUpdateGroupCondition.queryBuilder', function(e, rule, error, value) {

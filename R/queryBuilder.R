@@ -92,10 +92,12 @@ lookup <- function(id, operator, value) {
     return(paste(id, l.operators1[[operator]], value))
   }
   if (operator %in% names(l.operators2)) {
-    return(paste0(l.operators2[[operator]], '(', id, ', \"', value, '\")'))
+    return(paste0(l.operators2[[operator]], '(', id, ', ', value, ')'))
+#    return(paste0(l.operators2[[operator]], '(', id, ', \"', value, '\")'))
   }
   if (operator %in% names(l.operators3)) {
-    return(paste0(l.operators3[[operator]], '(\"', value, '\", ', id, ')'))
+    return(paste0(l.operators3[[operator]], '(', value, ', ', id, ')'))
+#    return(paste0(l.operators3[[operator]], '(\"', value, '\", ', id, ')'))
   }
   if (operator %in% names(l.operators4)) {
     if (operator == 'between') {
@@ -141,6 +143,12 @@ recurseFilter <- function(filter = NULL) {
           value <- lapply(filter$rules[[i]]$value, function(x) paste0('as.Date(\"', x, '\")'))  # date range
         } else {
           value <- paste0('as.Date(\"', filter$rules[[i]]$value, '\")')  # single date
+        }
+      } else if (filter$rules[[i]]$type == 'string') {  # enclose strings in quotes
+        if (length(filter$rules[[i]]$value) > 1) {
+          value <- lapply(filter$rules[[i]]$value, function(x) paste0('\"', x, '\"'))  # list of strings
+        } else {
+          value <- paste0('\"', filter$rules[[i]]$value, '\"')  # single string
         }
       } else {
         value = filter$rules[[i]]$value
