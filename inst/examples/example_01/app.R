@@ -4,6 +4,7 @@
 
 library(shiny)
 library(queryBuilder)
+library(jsonlite)
 
 df.data <- mtcars
 df.data$name <- row.names(df.data)
@@ -15,7 +16,7 @@ df.data[2:3, 'gear'] <- NA
 
 server <- function(input, output) {
 
-  output$q1 <- renderQueryBuilder({
+  output$querybuilder <- renderQueryBuilder({
     queryBuilder(data = df.data, filters = list(list(name = 'mpg', type = 'double', min=min(mtcars$mpg), max=max(mtcars$mpg), step=0.1),
                                                 list(name = 'disp', type = 'integer', min=60, step=1),
                                                 list(name = 'gear', type = 'integer', input = 'select'),
@@ -24,24 +25,36 @@ server <- function(input, output) {
                                                 list(name = 'date', type = 'date'),
                                                 list(name = 'logical', type = 'boolean', input = 'radio'),
                                                 list(name = 'carb', type = 'string', input = 'selectize')),
-                 autoassign = TRUE,
-                 default_condition = 'OR',
+                 autoassign = FALSE,
+                 default_condition = 'AND',
                  allow_empty = TRUE,
                  display_errors = TRUE,
                  display_empty_filter = FALSE
     )
   })
 
-#  output$txt1 <- renderPrint(jsonlite::prettify(input$q1_filters))
-#  output$txt2 <- renderPrint(input$q1_out)
-  output$txt2 <- renderPrint({
-    req(input$q1_validate)
-    cat(filterTable(input$q1_out, df.data, 'text'))
+  output$txtValidation <- renderUI({
+    if(input$querybuilder_validate == TRUE) {
+      h3('VALID QUERY', style="color:green")
+    } else {
+      h3('INVALID QUERY', style="color:red")
+    }
   })
 
+  output$txtFilterText <- renderUI({
+    req(input$querybuilder_validate)
+    h4(span('Filter sent to dplyr: ', style="color:blue"), span(filterTable(input$querybuilder_out, df.data, 'text'), style="color:green"))
+  })
+
+  output$txtFilterList <- renderPrint({
+    req(input$querybuilder_validate)
+    input$querybuilder_out
+  })
+
+
   output$dt <- renderTable({
-    req(input$q1_validate)
-    df <- filterTable(input$q1_out, df.data, 'table')
+    req(input$querybuilder_validate)
+    df <- filterTable(input$querybuilder_out, df.data, 'table')
     df$date <- strftime(df$date, format="%Y-%m-%d")
     df
   })
@@ -50,12 +63,17 @@ server <- function(input, output) {
 ui <- shinyUI(
   fluidPage(
     fluidRow(
-      column(8, queryBuilderOutput('q1', width = 800, height = 300),
-             tableOutput('dt')
-      ),
-      verbatimTextOutput('txt1'),
-      verbatimTextOutput('txt2')
-    )
+      column(8, queryBuilderOutput('querybuilder', width = 800, height = 300)),
+      column(2, uiOutput('txtValidation'))
+    ),
+    hr(),
+    uiOutput('txtFilterText'),
+    hr(),
+    h3("Output Table", style="color:blue"),
+    fluidRow(tableOutput('dt')),
+    hr(),
+    h3("Output Filter List", style="color:blue"),
+    verbatimTextOutput('txtFilterList')
   )
 )
 
