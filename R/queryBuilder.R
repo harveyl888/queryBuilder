@@ -10,6 +10,7 @@
 #' @export
 queryBuilder <- function(data = NULL,
                          filters = list(),
+                         default_condition = 'AND',
                          allow_empty = FALSE,
                          display_errors = TRUE,
                          display_empty_filter = TRUE,
@@ -28,7 +29,8 @@ queryBuilder <- function(data = NULL,
     }
   }
 
-  settings = list(allow_empty = allow_empty,
+  settings = list(default_condition = default_condition,
+                  allow_empty = allow_empty,
                   display_errors = display_errors,
                   display_empty_filter = display_empty_filter)
 
