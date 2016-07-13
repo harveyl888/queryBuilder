@@ -115,12 +115,6 @@ HTMLWidgets.widget({
 
         $(el).css("overflow", "auto");
 
-
-        // don't display errors
- //       $(el).on('validationError.queryBuilder', function(e, rule, error, value) {
-//          e.preventDefault();
-//        });
-
         // return shiny variables on events
         $(el).on('afterDeleteGroup.queryBuilder afterDeleteRule.queryBuilder afterUpdateRuleValue.queryBuilder afterUpdateRuleFilter.queryBuilder afterUpdateRuleOperator.queryBuilder  afterUpdateGroupCondition.queryBuilder', function(e, rule, error, value) {
           Shiny.onInputChange(el.id + '_out', $(el).queryBuilder('getRules'));
