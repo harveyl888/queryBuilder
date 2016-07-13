@@ -50,7 +50,7 @@ server <- function(input, output) {
 ui <- shinyUI(
   fluidPage(
     fluidRow(
-      column(8, queryBuilderOutput('q1'),
+      column(8, queryBuilderOutput('q1', width = 800, height = 300),
              tableOutput('dt')
       ),
       verbatimTextOutput('txt1'),

@@ -113,6 +113,8 @@ HTMLWidgets.widget({
           operators: operator
         });
 
+        $(el).css("overflow", "auto");
+
 
         // don't display errors
  //       $(el).on('validationError.queryBuilder', function(e, rule, error, value) {
