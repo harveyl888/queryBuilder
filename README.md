@@ -26,5 +26,16 @@ queryBuilder can take a number of arguments:
 -   `display_errors`: Boolean.  If set to true then an icon and tooltip explaining the error will be displayed (default = true).
 -   `display_empty_filter`: Boolean.  If true then an empty option will be included for each rule.  If false then the first filter will be selected when creating the rule (default = true).
 
+## Filters
+jQuery QueryBuilder can create powerful queries from a series of inputs.  The `filters` option of this widget can be used to specify specific columns of a data frame and determine how they behave in jQuery QueryBuilder.  It is constructed as a list of lists containing a number of named attributes.  
+For example, using the `mtcars` data, filters for mpg and cyl can be constructed as follows:
+```r
+filters = list(list(name = 'mpg', type = 'double', min = min(mtcars$mpg), max = max(mtcars$mpg), step = 0.1),
+               list(name = 'cyl', type = 'double'))
+```
+Here both mpg and cyl are defined with type double.  In addition, mpg has an allowable range between its minimum and maximum values
+
+
+
 
 To be done: complete README.md
