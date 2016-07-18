@@ -170,8 +170,8 @@ recurseFilter <- function(filter = NULL) {
         fs <- paste(fs, paste0('(', recurseFilter(filter = filter$rules[[i]]), ')'), sep = paste0(' ', condition[[filter$condition]], ' '))  ## subsequent filters
       }
     } else {  # not a nested filter group - process as a single filter
-      if (is.null(filter$rules[[i]]$value)) {  # value is null when checking for NA
-        value <- NULL
+      if (length(filter$rules[[i]]$value) == 0) {  # value is list() when checking for NA
+        value <- 0
       } else if (filter$rules[[i]]$type == 'date') {  # treat dates
         if (length(filter$rules[[i]]$value) > 1) {
           value <- lapply(filter$rules[[i]]$value, function(x) paste0('as.Date(\"', x, '\")'))  # date range
