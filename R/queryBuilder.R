@@ -129,11 +129,9 @@ lookup <- function(id, operator, value) {
   }
   if (operator %in% names(l.operators2)) {
     return(paste0(l.operators2[[operator]], '(', id, ', ', value, ')'))
-#    return(paste0(l.operators2[[operator]], '(', id, ', \"', value, '\")'))
   }
   if (operator %in% names(l.operators3)) {
     return(paste0(l.operators3[[operator]], '(', value, ', ', id, ')'))
-#    return(paste0(l.operators3[[operator]], '(\"', value, '\", ', id, ')'))
   }
   if (operator %in% names(l.operators4)) {
     if (operator == 'between') {
@@ -167,11 +165,11 @@ recurseFilter <- function(filter = NULL) {
   for (i in 1:length(filter$rules)) {
     if (typeof(filter$rules[[i]]$rules) == 'list') {  # nested filter group
       if (is.null(fs)) {
-        fs <- paste0('(', recurseFilter(filter = filter$rules[[i]]), ')')
+        fs <- paste0('(', recurseFilter(filter = filter$rules[[i]]), ')')  # first filter
       } else {
-        fs <- paste(fs, paste0('(', recurseFilter(filter = filter$rules[[i]]), ')'), sep = paste0(' ', condition[[filter$condition]], ' '))
+        fs <- paste(fs, paste0('(', recurseFilter(filter = filter$rules[[i]]), ')'), sep = paste0(' ', condition[[filter$condition]], ' '))  ## subsequent filters
       }
-    } else {
+    } else {  # not a nested filter group - process as a single filter
       if (is.null(filter$rules[[i]]$value)) {  # value is null when checking for NA
         value <- NULL
       } else if (filter$rules[[i]]$type == 'date') {  # treat dates
@@ -190,9 +188,9 @@ recurseFilter <- function(filter = NULL) {
         value = filter$rules[[i]]$value
       }
       if (is.null(fs)) {
-        fs <- lookup(filter$rules[[i]]$id, filter$rules[[i]]$operator, value)
+        fs <- lookup(filter$rules[[i]]$id, filter$rules[[i]]$operator, value)  # first filter
       } else {
-        fs <- paste(fs, lookup(filter$rules[[i]]$id, filter$rules[[i]]$operator, value), sep = paste0(' ', condition[[filter$condition]], ' '))
+        fs <- paste(fs, lookup(filter$rules[[i]]$id, filter$rules[[i]]$operator, value), sep = paste0(' ', condition[[filter$condition]], ' '))  # subsequent filters
       }
     }
   }
