@@ -55,6 +55,17 @@ In addition to constructing the htmlwidget, an additional function called filter
 `filterTable(input$querybuilder_out, data, 'table')` returns a filtered data frame for element `querybuilder` on data frame `data`.
 `filterTable(input$querybuilder_out, data, 'text')` returns the input to dplyr filter_ for element `querybuilder` on data frame `data`. 
 
+## Example
 
+A Shiny example can be found under inst/examples/example01.  In this case part of the mtcars data are used with some additonal columns:
+-   mpg: mtcars mpg column with allowable range between the minimum and maximum values.
+-   disp: mtcars disp column with minimum value of 60.
+-   gear: mtcars gear column with select input (only a single value may be selected).
+-   name: character column taken from rownames.
+-   nameFactor: name column defined as a factor to demonstrate selectize.
+-   date: random date generated between 01-Jan-2016 and 20-Jan-2016.
+-   logical: boolean value.
+-   carb: selectize (can filter on multiple values).
 
-To be done: complete README.md
+This example can also be found at http://162.243.57.47:3838/home/harvey/queryBuilder/
+
