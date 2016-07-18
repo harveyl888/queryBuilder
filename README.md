@@ -5,7 +5,6 @@ jQuery QueryBuilder is a jQuery plugin offering an simple interface to create co
 
 This htmlwidget works in shiny apps and uses jQuery QueryBuilder to build a query using data frame columns and dplyr to filter the data frame from the query.
 
-
 ## Install
 ```r
 library(devtools)
@@ -33,7 +32,18 @@ For example, using the `mtcars` data, filters for mpg and cyl can be constructed
 filters = list(list(name = 'mpg', type = 'double', min = min(mtcars$mpg), max = max(mtcars$mpg), step = 0.1),
                list(name = 'cyl', type = 'double'))
 ```
-Here both mpg and cyl are defined with type double.  In addition, mpg has an allowable range between its minimum and maximum values
+Here both mpg and cyl are defined with type double.  In addition, mpg has an allowable range between its minimum and maximum values.
+
+Filter types include integer, double, string, date and boolean.  In addition, select, radio and the selectize plugin are recognized.
+
+If autoassign is set to true then all the columns from the data frame will be used as potential filters and they will be assigned according to the column class as follows:
+-   `numeric`: filter type = double
+-   `integer`: filter type = integer
+-   `character`: filter type = string
+-   `factor`: filter type = string, input = selectize
+-   `Date`: filter type = date
+-   `logical`: filter type = boolean, input = radio
+
 
 
 
