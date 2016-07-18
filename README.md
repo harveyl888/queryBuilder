@@ -44,7 +44,16 @@ If autoassign is set to true then all the columns from the data frame will be us
 -   `Date`: filter type = date
 -   `logical`: filter type = boolean, input = radio
 
+## Shiny
+The queryBuilder widget returns a number of variables back to Shiny apps, each of which are prefixed by the element id and outlined below for an element created using `queryBuilderOutput('querybuilder')`:
+-   `querybuilder_filters`: stringified JSON representation of input filters. 
+-   `querybuilder_out`: result of jQuery QueryBuilder's getRules method.  This output is used to subsequently filter the data frame.
+-   `querybuilder_validate`: result of jQuery QueryBuilder's validate method.
 
+
+In addition to constructing the htmlwidget, an additional function called filterTable is defined:
+`filterTable(input$querybuilder_out, data, 'table')` returns a filtered data frame for element `querybuilder` on data frame `data`.
+`filterTable(input$querybuilder_out, data, 'text')` returns the input to dplyr filter_ for element `querybuilder` on data frame `data`. 
 
 
 
