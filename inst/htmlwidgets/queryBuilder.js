@@ -106,19 +106,13 @@ HTMLWidgets.widget({
                                                       }
                                                     });
 
-        // add ability to change the value type to a select control if we have a group compare input
-        // input is changed if operator belongs to the 'Group' optgroup
-//        var optionValues = [];
-//        x.data.forEach(function(i) {if (i.input == 'group') {optionValues.push(i.name);} });
-
         var optionValues = '';
         x.data.forEach(function(i) {if (i.input == 'group') {optionValues += '<option value="'+ i.name + '">' + i.name + '</option>';} });
         $(el).on('afterUpdateRuleOperator.queryBuilder', function(e, rule) {
- //         var optionValues = '<option value=55>55</option>';
                                                            if (rule.operator.optgroup == 'Group') {
                                                              $container = rule.$el.find('.rule-value-container');
                                                              $container.find('.form-control').each(function() {
-                                                               $("<select />").attr({ class:"fonm-control", type:this.type, name:this.name}).append(optionValues).insertBefore(this);
+                                                               $("<select />").attr({ class:"form-control", type:this.type, name:this.name}).append(optionValues).insertBefore(this);
                                                              }).remove();
                                                            }
         });
