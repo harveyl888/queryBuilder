@@ -15,8 +15,8 @@ HTMLWidgets.widget({
 
         var opObj = {};
         opObj.text = ['equal', 'not_equal', 'begins_with', 'not_begins_with', 'ends_with', 'not_ends_with', 'contains', 'not_contains', 'is_na', 'is_not_na'];
-        opObj.numeric = ['equal', 'not_equal', 'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between', 'not_between', 'is_na', 'is_not_na', 'equal_', 'not_equal_', 'less_', 'less_or_equal_', 'greater_', 'greater_or_equal_'];
-        opObj.newcompare = ['equal', 'not_equal', 'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between', 'not_between'];
+        opObj.numeric = ['equal', 'not_equal', 'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between', 'not_between', 'is_na', 'is_not_na'];
+        opObj.compareGroups = ['equal', 'not_equal', 'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between', 'not_between', 'is_na', 'is_not_na', 'equal_', 'not_equal_', 'less_', 'less_or_equal_', 'greater_', 'greater_or_equal_'];
 
 
         var filter = [];
@@ -26,7 +26,7 @@ HTMLWidgets.widget({
           myFilter.label = i.name;
           myFilter.type = i.type;
           if (i.hasOwnProperty('input')) {
-            if (i.input != 'selectize') {
+            if (i.input != 'selectize' && i.input != 'group') {
               myFilter.input = i.input;
             }
           }
@@ -64,8 +64,8 @@ HTMLWidgets.widget({
           // Add operators to filter
           if (i.input == 'selectize') {
             myFilter.operators = ['in', 'not_in'];
-          } else if (i.input == 'new_compare') {
-            myFilter.operators = opObj.newcompare;
+          } else if (i.input == 'group') {
+            myFilter.operators = opObj.compareGroups;
           } else if (i.input == 'select' || i.input == 'radio') {
             myFilter.operators = ['equal', 'not_equal', 'is_na', 'is_not_na'];
           } else if (i.hasOwnProperty('operators')) {
@@ -105,6 +105,24 @@ HTMLWidgets.widget({
                                                         .find('.selectize-control').removeClass('form-control');
                                                       }
                                                     });
+
+        // add ability to change the value type to a select control if we have a group compare input
+        // input is changed if operator belongs to the 'Group' optgroup
+//        var optionValues = [];
+//        x.data.forEach(function(i) {if (i.input == 'group') {optionValues.push(i.name);} });
+
+        var optionValues = '';
+        x.data.forEach(function(i) {if (i.input == 'group') {optionValues += '<option value="'+ i.name + '">' + i.name + '</option>';} });
+        $(el).on('afterUpdateRuleOperator.queryBuilder', function(e, rule) {
+ //         var optionValues = '<option value=55>55</option>';
+                                                           if (rule.operator.optgroup == 'Group') {
+                                                             $container = rule.$el.find('.rule-value-container');
+                                                             $container.find('.form-control').each(function() {
+                                                               $("<select />").attr({ class:"fonm-control", type:this.type, name:this.name}).append(optionValues).insertBefore(this);
+                                                             }).remove();
+                                                           }
+        });
+
 
         // for debugging
         window.filterout = filter;
