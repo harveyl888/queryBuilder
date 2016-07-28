@@ -15,7 +15,8 @@ HTMLWidgets.widget({
 
         var opObj = {};
         opObj.text = ['equal', 'not_equal', 'begins_with', 'not_begins_with', 'ends_with', 'not_ends_with', 'contains', 'not_contains', 'is_na', 'is_not_na'];
-        opObj.numeric = ['equal', 'not_equal', 'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between', 'not_between', 'is_na', 'is_not_na'];
+        opObj.numeric = ['equal', 'not_equal', 'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between', 'not_between', 'is_na', 'is_not_na', 'equal_', 'not_equal_', 'less_', 'less_or_equal_', 'greater_', 'greater_or_equal_'];
+        opObj.newcompare = ['equal', 'not_equal', 'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between', 'not_between'];
 
 
         var filter = [];
@@ -63,6 +64,8 @@ HTMLWidgets.widget({
           // Add operators to filter
           if (i.input == 'selectize') {
             myFilter.operators = ['in', 'not_in'];
+          } else if (i.input == 'new_compare') {
+            myFilter.operators = opObj.newcompare;
           } else if (i.input == 'select' || i.input == 'radio') {
             myFilter.operators = ['equal', 'not_equal', 'is_na', 'is_not_na'];
           } else if (i.hasOwnProperty('operators')) {
@@ -81,9 +84,13 @@ HTMLWidgets.widget({
         // Add global operators list
         var myOperators = ['equal', 'not_equal', 'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between', 'not_between', 'begins_with', 'not_begins_with', 'ends_with', 'not_ends_with', 'contains', 'not_contains', 'in', 'not_in'];
         var operator = [];
-        myOperators.forEach(function(x) { operator.push({ type : x}) });
-        operator.push({ type: "is_not_na", "nb_inputs": "0", "apply_to": ["number", "string", "datetime", "boolean"] });
-        operator.push({ type: "is_na", "nb_inputs": "0", "apply_to": ["number", "string", "datetime", "boolean"] });
+        myOperators.forEach(function(x) { operator.push({ type : x, optgroup : 'Scalar'}) });
+        operator.push({ type: "is_not_na", optgroup: "NA values", "nb_inputs": "0", "apply_to": ["number", "string", "datetime", "boolean"] });
+        operator.push({ type: "is_na", optgroup: "NA values", "nb_inputs": "0", "apply_to": ["number", "string", "datetime", "boolean"] });
+
+        // Add additional operators for group comparison
+        var myOperatorsGroups = ['equal_', 'not_equal_', 'less_', 'less_or_equal_', 'greater_', 'greater_or_equal_'];
+        myOperatorsGroups.forEach(function(x) { operator.push({ type : x, optgroup : 'Group', nb_inputs: 1, apply_to: ["number"] }) });
 
         // return filter as stringified JSON
         Shiny.onInputChange(el.id + '_filters', JSON.stringify(filter));

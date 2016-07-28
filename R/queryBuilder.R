@@ -29,6 +29,8 @@ queryBuilder <- function(data = NULL,
         filters[[length(filters) + 1]] <- list(name = names(c), type = 'double')
       } else if (c == 'integer') {
         filters[[length(filters) + 1]] <- list(name = names(c), type = 'integer')
+      } else if (c == 'new_compare') {
+        filters[[length(filters) + 1]] <- list(name = names(c), type = 'new_compare', input = 'new_compare')
       } else if (c == 'character') {
         filters[[length(filters) + 1]] <- list(name = names(c), type = 'string')
       } else if (c == 'factor') {
