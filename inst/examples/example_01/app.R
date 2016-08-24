@@ -28,7 +28,7 @@ server <- function(input, output) {
                  autoassign = FALSE,
                  default_condition = 'AND',
                  allow_empty = TRUE,
-                 display_errors = TRUE,
+                 display_errors = FALSE,
                  display_empty_filter = FALSE
     )
   })

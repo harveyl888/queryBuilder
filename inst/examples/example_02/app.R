@@ -16,10 +16,12 @@ df.data <- df.data[, grep('AV_', names(df.data))]
 server <- function(input, output) {
 
   output$querybuilder <- renderQueryBuilder({
-    queryBuilder(data = df.data, filters = list(list(name = 'AV_group_1', type = 'double', input = 'group'),
-                                                list(name = 'AV_group_2', type = 'double', input = 'group'),
-                                                list(name = 'AV_group_3', type = 'double', input = 'group'),
-                                                list(name = 'AV_group_4', type = 'double', input = 'group')),
+    queryBuilder(data = df.data, filters = list(list(name = 'Trend', type = 'string', input = 'function_0'),
+                                                list(name = 'AV_group_1', type = 'string', input = 'group'),
+#                                                list(name = 'AV_group_2', type = 'string', input = 'group'),
+                                                list(name = 'AV_group_2', type = 'string', input = 'selectize'),
+                                                list(name = 'AV_group_3', type = 'string', input = 'group'),
+                                                list(name = 'AV_group_4', type = 'string', input = 'group')),
                  autoassign = FALSE,
                  default_condition = 'AND',
                  allow_empty = TRUE,

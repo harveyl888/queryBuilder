@@ -56,7 +56,9 @@ QueryBuilder.regional['en'] = {
     "less_": "less",
     "less_or_equal_": "less or equal",
     "greater_": "greater",
-    "greater_or_equal_": "greater or equal"
+    "greater_or_equal_": "greater or equal",
+    "up" : "up",
+    "down" : "down"
   },
   "errors": {
     "no_filter": "No filter selected",

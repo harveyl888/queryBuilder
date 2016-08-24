@@ -26,7 +26,7 @@ HTMLWidgets.widget({
           myFilter.label = i.name;
           myFilter.type = i.type;
           if (i.hasOwnProperty('input')) {
-            if (i.input != 'selectize' && i.input != 'group') {
+            if (i.input != 'selectize' && i.input != 'group' && i.input != 'function_0') {
               myFilter.input = i.input;
             }
           }
@@ -40,7 +40,13 @@ HTMLWidgets.widget({
               myFilter.validation = filterValidation;
             }
           }
-          if (i.input == 'select' || i.input == 'radio') {
+          if (i.input == 'function_0') {
+            myFilter.plugin = 'selectize';
+            selectizeOptions = [];
+            x.colnames.forEach(function(x) { selectizeOptions.push({ id: x })});
+            myFilter.plugin_config = { "valueField" : "id", "labelField" : "id", "maxItems" : null, "create" : false, "options" : selectizeOptions };
+            myFilter.valueGetter = function(rule) { return rule.$el.find('.selectized').selectize()[0].selectize.items; };
+          } else if (i.input == 'select' || i.input == 'radio') {
             if (i.hasOwnProperty('values')) {
               var filterValues = [];
               for (var k = 0; k < i.values.length; k++) {
@@ -64,6 +70,8 @@ HTMLWidgets.widget({
           // Add operators to filter
           if (i.input == 'selectize') {
             myFilter.operators = ['in', 'not_in'];
+          } else if (i.input == 'function_0') {
+            myFilter.operators = ['up', 'down'];
           } else if (i.input == 'group') {
             myFilter.operators = opObj.compareGroups;
           } else if (i.input == 'select' || i.input == 'radio') {
@@ -87,6 +95,8 @@ HTMLWidgets.widget({
         myOperators.forEach(function(x) { operator.push({ type : x, optgroup : 'Scalar'}) });
         operator.push({ type: "is_not_na", optgroup: "NA values", "nb_inputs": "0", "apply_to": ["number", "string", "datetime", "boolean"] });
         operator.push({ type: "is_na", optgroup: "NA values", "nb_inputs": "0", "apply_to": ["number", "string", "datetime", "boolean"] });
+        operator.push({ type: "up", optgroup: "Trend Analysis", "nb_inputs": "1", "apply_to": ["string"] });
+        operator.push({ type: "down", optgroup: "Trend Analysis", "nb_inputs": "1", "apply_to": ["string"] });
 
         // Add additional operators for group comparison
         var myOperatorsGroups = ['equal_', 'not_equal_', 'less_', 'less_or_equal_', 'greater_', 'greater_or_equal_'];

@@ -4,7 +4,9 @@
 \alias{queryBuilder}
 \title{queryBuilder}
 \usage{
-queryBuilder(data = NULL, filters = list(), width = NULL, height = NULL)
+queryBuilder(data = NULL, autoassign = FALSE, filters = list(),
+  default_condition = "AND", allow_empty = FALSE, display_errors = TRUE,
+  display_empty_filter = TRUE, width = NULL, height = NULL)
 }
 \arguments{
 \item{data}{data frame}

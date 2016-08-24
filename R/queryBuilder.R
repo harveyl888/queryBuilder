@@ -40,8 +40,10 @@ queryBuilder <- function(data = NULL,
       }
     }
   } else {
-    if (length(filters) == 0) return()
-    if (!all(sapply(filters, function(x) x['name']) %in% names(data))) return()
+    if (length(filters) == 0) return()  # No filters - do not construct
+    nonFunctionFilters <- unlist(lapply(filters, function(x) if(!x$input %in% c('function_0')) x$name))
+    if (!all(nonFunctionFilters %in% names(data))) return()
+#    if (!all(sapply(filters, function(x) x['name']) %in% names(data))) return()
   }
   for (i in 1:length(filters)) {
     if (filters[[i]]['input'] %in% c('select', 'selectize', 'radio')) {
@@ -60,6 +62,7 @@ queryBuilder <- function(data = NULL,
   # forward options using x
   x = list(
     data = filters,
+    colnames = names(data),
     settings = settings
   )
 
@@ -90,7 +93,7 @@ filterTable <- function(filters = NULL, data = NULL, output = c('table', 'text')
   if (output == 'text') {
     return(f)
   } else if (output == 'table') {
-    df <- dplyr::filter_(data, f)
+    df <- data %>% dplyr::rowwise() %>% dplyr::filter_(f)
     return(df)
   } else {
     return()
@@ -109,7 +112,8 @@ filterTable <- function(filters = NULL, data = NULL, output = c('table', 'text')
 #'
 lookup <- function(id, operator, value) {
   ## triple style operator, eg a = 1
-  l.operators1 <- list('equal' = '==', 'not_equal' = '!=', 'less' = '<', 'less_or_equal' = '<=', 'greater' = '>', 'greater_or_equal' = '>=')
+  l.operators1 <- list('equal' = '==', 'not_equal' = '!=', 'less' = '<', 'less_or_equal' = '<=', 'greater' = '>', 'greater_or_equal' = '>=',
+                       'equal_' = '==', 'not_equal_' = '!=', 'less_' = '<', 'less_or_equal_' = '<=', 'greater_' = '>', 'greater_or_equal_' = '>=')
   ## functional style operator, eg startswith(a, value)
   l.operators2 <- list('begins_with' = 'startsWith', 'not_begins_with' = '!startsWith', 'ends_with' = 'endsWith', 'not_ends_with' = '!endsWith')
   ## grep style operator, eg grepl(value, a)
@@ -120,6 +124,8 @@ lookup <- function(id, operator, value) {
   l.operators5 <- list('is_na' = 'is.na', 'is_not_na' = '!is.na')
   ## operators acting on multiple values
   l.operators6 <- list('in' = '%in%', 'not_in' = '!%in%')
+  ## operators based on a trend
+  l.operators7 <- list('up' = 'upTrend', 'down' = 'downTrend')
 
   # javascript boolean to R boolean
   if (value %in% c('true', 'false')) { value <- toupper(value) }
@@ -149,6 +155,10 @@ lookup <- function(id, operator, value) {
     } else {
       return(paste0('!(', id, ' %in% c(', paste(value, collapse = ', '), '))'))
     }
+  }
+  if (operator %in% names(l.operators7)) {
+    return(paste0('queryBuilder::', l.operators7[[operator]], '(', paste(gsub('\"', '', value), collapse = ', '), ')'))
+    ## Need to add namespace for defined functions for dplyr filter_ to work
   }
 }
 
@@ -226,3 +236,28 @@ renderQueryBuilder <- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) { expr <- substitute(expr) } # force quoted
   htmlwidgets::shinyRenderWidget(expr, queryBuilderOutput, env, quoted = TRUE)
 }
+
+
+#' upTrend - analysis helper function
+#' @export
+upTrend <- function(...) {
+  vals <- list(...)
+  if (length(vals) < 2) return(TRUE)
+  for (i in 2:length(vals)) {
+    if (vals[[i-1]] > vals[[i]]) return(FALSE)
+  }
+  return(TRUE)
+}
+
+
+#' downTrend - analysis helper function
+#' @export
+downTrend <- function(...) {
+  vals <- list(...)
+  if (length(vals) < 2) return(TRUE)
+  for (i in 2:length(vals)) {
+    if (vals[[i-1]] < vals[[i]]) return(FALSE)
+  }
+  return(TRUE)
+}
+
