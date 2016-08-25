@@ -12,9 +12,9 @@ library(jsonlite)
 df.data <- data.frame(sapply(seq(16), function(x) runif(20, 1, 10)))
 names(df.data) <- paste0('Sample_', seq(16))
 for (i in 1:4) {
-  df.data[[paste0('AV_group_', i)]] <- rowMeans(df.data[, ((i-1)*4+1):(i*4)])
+  df.data[[paste0('AV-group_', i)]] <- rowMeans(df.data[, ((i-1)*4+1):(i*4)])
 }
-df.data <- df.data[, grep('AV_', names(df.data))]
+df.data <- df.data[, grep('AV-', names(df.data))]
 
 server <- function(input, output) {
 

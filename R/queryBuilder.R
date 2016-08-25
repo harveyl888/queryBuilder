@@ -157,7 +157,7 @@ lookup <- function(id, operator, value) {
     }
   }
   if (operator %in% names(l.operators7)) {
-    return(paste0('queryBuilder::', l.operators7[[operator]], '(', paste(gsub('\"', '', value), collapse = ', '), ')'))
+    return(paste0('queryBuilder::', l.operators7[[operator]], '(', paste(gsub('\"', '`', value), collapse = ', '), ')'))
     ## Need to add namespace for defined functions for dplyr filter_ to work
   }
 }
