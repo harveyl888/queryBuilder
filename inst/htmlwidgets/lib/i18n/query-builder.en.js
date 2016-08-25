@@ -50,7 +50,15 @@ QueryBuilder.regional['en'] = {
     "is_null": "is null",
     "is_not_null": "is not null",
     "is_na": "is na",
-    "is_not_na": "is not na"
+    "is_not_na": "is not na",
+    "equal_": "equal",
+    "not_equal_": "not equal",
+    "less_": "less",
+    "less_or_equal_": "less or equal",
+    "greater_": "greater",
+    "greater_or_equal_": "greater or equal",
+    "up" : "up",
+    "down" : "down"
   },
   "errors": {
     "no_filter": "No filter selected",

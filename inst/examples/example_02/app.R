@@ -6,29 +6,26 @@ library(shiny)
 library(queryBuilder)
 library(jsonlite)
 
-df.data <- mtcars
-df.data$name <- row.names(df.data)
-df.data$nameFactor <- as.factor(df.data$name)
-df.data$date <- sample(seq(as.Date('2016/01/01'), as.Date('2016/01/20'), by="day"), nrow(df.data), replace = TRUE)
-df.data$vs <- as.integer(df.data$vs)
-df.data$logical <- df.data$carb < 4
-df.data[2:3, 'gear'] <- NA
+df.data <- data.frame(sapply(seq(16), function(x) runif(20, 1, 10)))
+names(df.data) <- paste0('Sample_', seq(16))
+for (i in 1:4) {
+  df.data[[paste0('AV_group_', i)]] <- rowMeans(df.data[, ((i-1)*4+1):(i*4)])
+}
+df.data <- df.data[, grep('AV_', names(df.data))]
 
 server <- function(input, output) {
 
   output$querybuilder <- renderQueryBuilder({
-    queryBuilder(data = df.data, filters = list(list(name = 'mpg', type = 'double', min=min(mtcars$mpg), max=max(mtcars$mpg), step=0.1),
-                                                list(name = 'disp', type = 'integer', min=60, step=1),
-                                                list(name = 'gear', type = 'integer', input = 'select'),
-                                                list(name = 'name', type = 'string'),
-                                                list(name = 'nameFactor', type = 'string', input = 'selectize'),
-                                                list(name = 'date', type = 'date'),
-                                                list(name = 'logical', type = 'boolean', input = 'radio'),
-                                                list(name = 'carb', type = 'string', input = 'selectize')),
+    queryBuilder(data = df.data, filters = list(list(name = 'Trend', type = 'string', input = 'function_0'),
+                                                list(name = 'AV_group_1', type = 'string', input = 'group'),
+#                                                list(name = 'AV_group_2', type = 'string', input = 'group'),
+                                                list(name = 'AV_group_2', type = 'string', input = 'selectize'),
+                                                list(name = 'AV_group_3', type = 'string', input = 'group'),
+                                                list(name = 'AV_group_4', type = 'string', input = 'group')),
                  autoassign = FALSE,
                  default_condition = 'AND',
                  allow_empty = TRUE,
-                 display_errors = FALSE,
+                 display_errors = TRUE,
                  display_empty_filter = FALSE
     )
   })
@@ -55,7 +52,6 @@ server <- function(input, output) {
   output$dt <- renderTable({
     req(input$querybuilder_validate)
     df <- filterTable(input$querybuilder_out, df.data, 'table')
-    df$date <- strftime(df$date, format="%Y-%m-%d")
     df
   })
 }

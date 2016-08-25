@@ -16,6 +16,7 @@ HTMLWidgets.widget({
         var opObj = {};
         opObj.text = ['equal', 'not_equal', 'begins_with', 'not_begins_with', 'ends_with', 'not_ends_with', 'contains', 'not_contains', 'is_na', 'is_not_na'];
         opObj.numeric = ['equal', 'not_equal', 'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between', 'not_between', 'is_na', 'is_not_na'];
+        opObj.compareGroups = ['equal', 'not_equal', 'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between', 'not_between', 'is_na', 'is_not_na', 'equal_', 'not_equal_', 'less_', 'less_or_equal_', 'greater_', 'greater_or_equal_'];
 
 
         var filter = [];
@@ -25,7 +26,7 @@ HTMLWidgets.widget({
           myFilter.label = i.name;
           myFilter.type = i.type;
           if (i.hasOwnProperty('input')) {
-            if (i.input != 'selectize') {
+            if (i.input != 'selectize' && i.input != 'group' && i.input != 'function_0') {
               myFilter.input = i.input;
             }
           }
@@ -39,7 +40,13 @@ HTMLWidgets.widget({
               myFilter.validation = filterValidation;
             }
           }
-          if (i.input == 'select' || i.input == 'radio') {
+          if (i.input == 'function_0') {
+            myFilter.plugin = 'selectize';
+            selectizeOptions = [];
+            x.colnames.forEach(function(x) { selectizeOptions.push({ id: x })});
+            myFilter.plugin_config = { "valueField" : "id", "labelField" : "id", "maxItems" : null, "create" : false, "plugins" : [ 'remove_button', 'drag_drop' ], "options" : selectizeOptions};
+            myFilter.valueGetter = function(rule) { return rule.$el.find('.selectized').selectize()[0].selectize.items; };
+          } else if (i.input == 'select' || i.input == 'radio') {
             if (i.hasOwnProperty('values')) {
               var filterValues = [];
               for (var k = 0; k < i.values.length; k++) {
@@ -63,6 +70,10 @@ HTMLWidgets.widget({
           // Add operators to filter
           if (i.input == 'selectize') {
             myFilter.operators = ['in', 'not_in'];
+          } else if (i.input == 'function_0') {
+            myFilter.operators = ['up', 'down'];
+          } else if (i.input == 'group') {
+            myFilter.operators = opObj.compareGroups;
           } else if (i.input == 'select' || i.input == 'radio') {
             myFilter.operators = ['equal', 'not_equal', 'is_na', 'is_not_na'];
           } else if (i.hasOwnProperty('operators')) {
@@ -81,9 +92,15 @@ HTMLWidgets.widget({
         // Add global operators list
         var myOperators = ['equal', 'not_equal', 'less', 'less_or_equal', 'greater', 'greater_or_equal', 'between', 'not_between', 'begins_with', 'not_begins_with', 'ends_with', 'not_ends_with', 'contains', 'not_contains', 'in', 'not_in'];
         var operator = [];
-        myOperators.forEach(function(x) { operator.push({ type : x}) });
-        operator.push({ type: "is_not_na", "nb_inputs": "0", "apply_to": ["number", "string", "datetime", "boolean"] });
-        operator.push({ type: "is_na", "nb_inputs": "0", "apply_to": ["number", "string", "datetime", "boolean"] });
+        myOperators.forEach(function(x) { operator.push({ type : x, optgroup : 'Scalar'}) });
+        operator.push({ type: "is_not_na", optgroup: "NA values", "nb_inputs": "0", "apply_to": ["number", "string", "datetime", "boolean"] });
+        operator.push({ type: "is_na", optgroup: "NA values", "nb_inputs": "0", "apply_to": ["number", "string", "datetime", "boolean"] });
+        operator.push({ type: "up", optgroup: "Trend Analysis", "nb_inputs": "1", "apply_to": ["string"] });
+        operator.push({ type: "down", optgroup: "Trend Analysis", "nb_inputs": "1", "apply_to": ["string"] });
+
+        // Add additional operators for group comparison
+        var myOperatorsGroups = ['equal_', 'not_equal_', 'less_', 'less_or_equal_', 'greater_', 'greater_or_equal_'];
+        myOperatorsGroups.forEach(function(x) { operator.push({ type : x, optgroup : 'Group', nb_inputs: 1, apply_to: ["number"] }) });
 
         // return filter as stringified JSON
         Shiny.onInputChange(el.id + '_filters', JSON.stringify(filter));
@@ -98,6 +115,18 @@ HTMLWidgets.widget({
                                                         .find('.selectize-control').removeClass('form-control');
                                                       }
                                                     });
+
+        var optionValues = '';
+        x.data.forEach(function(i) {if (i.input == 'group') {optionValues += '<option value="'+ i.name + '">' + i.name + '</option>';} });
+        $(el).on('afterUpdateRuleOperator.queryBuilder', function(e, rule) {
+                                                           if (rule.operator.optgroup == 'Group') {
+                                                             $container = rule.$el.find('.rule-value-container');
+                                                             $container.find('.form-control').each(function() {
+                                                               $("<select />").attr({ class:"form-control", type:this.type, name:this.name}).append(optionValues).insertBefore(this);
+                                                             }).remove();
+                                                           }
+        });
+
 
         // for debugging
         window.filterout = filter;
