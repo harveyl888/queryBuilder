@@ -1,5 +1,8 @@
 ##
 ## Example shiny app for queryBuilder
+## This example demonstrates how the trend up / trend down functions can be applied
+## The functions are contained in the queryBuilder code (queryBuilder.R) but could be externalized.
+## Care should be taken, however, when using dplyr to ensure that the namespace is included.
 ##
 
 library(shiny)
@@ -16,18 +19,24 @@ df.data <- df.data[, grep('AV_', names(df.data))]
 server <- function(input, output) {
 
   output$querybuilder <- renderQueryBuilder({
-    queryBuilder(data = df.data, filters = list(list(name = 'Trend', type = 'string', input = 'function_0'),
-                                                list(name = 'AV_group_1', type = 'string', input = 'group'),
-#                                                list(name = 'AV_group_2', type = 'string', input = 'group'),
-                                                list(name = 'AV_group_2', type = 'string', input = 'selectize'),
-                                                list(name = 'AV_group_3', type = 'string', input = 'group'),
-                                                list(name = 'AV_group_4', type = 'string', input = 'group')),
+    queryBuilder(data = df.data, filters = list(list(name = 'Trend', type = 'string', input = 'function_0')),
                  autoassign = FALSE,
                  default_condition = 'AND',
                  allow_empty = TRUE,
                  display_errors = TRUE,
                  display_empty_filter = FALSE
     )
+#     queryBuilder(data = df.data, filters = list(list(name = 'Trend', type = 'string', input = 'function_0'),
+#                                                 list(name = 'AV_group_1', type = 'string', input = 'group'),
+#                                                 list(name = 'AV_group_2', type = 'string', input = 'group'),
+#                                                 list(name = 'AV_group_3', type = 'string', input = 'group'),
+#                                                 list(name = 'AV_group_4', type = 'string', input = 'group')),
+#                  autoassign = FALSE,
+#                  default_condition = 'AND',
+#                  allow_empty = TRUE,
+#                  display_errors = TRUE,
+#                  display_empty_filter = FALSE
+#     )
   })
 
   output$txtValidation <- renderUI({
