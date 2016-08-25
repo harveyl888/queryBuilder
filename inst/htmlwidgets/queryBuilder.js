@@ -44,7 +44,7 @@ HTMLWidgets.widget({
             myFilter.plugin = 'selectize';
             selectizeOptions = [];
             x.colnames.forEach(function(x) { selectizeOptions.push({ id: x })});
-            myFilter.plugin_config = { "valueField" : "id", "labelField" : "id", "maxItems" : null, "create" : false, "options" : selectizeOptions };
+            myFilter.plugin_config = { "valueField" : "id", "labelField" : "id", "maxItems" : null, "create" : false, "plugins" : [ 'remove_button', 'drag_drop' ], "options" : selectizeOptions};
             myFilter.valueGetter = function(rule) { return rule.$el.find('.selectized').selectize()[0].selectize.items; };
           } else if (i.input == 'select' || i.input == 'radio') {
             if (i.hasOwnProperty('values')) {
