@@ -19,24 +19,24 @@ df.data <- df.data[, grep('AV-', names(df.data))]
 server <- function(input, output) {
 
   output$querybuilder <- renderQueryBuilder({
-    queryBuilder(data = df.data, filters = list(list(name = 'Trend', type = 'string', input = 'function_0')),
-                 autoassign = FALSE,
-                 default_condition = 'AND',
-                 allow_empty = TRUE,
-                 display_errors = TRUE,
-                 display_empty_filter = FALSE
-    )
-#     queryBuilder(data = df.data, filters = list(list(name = 'Trend', type = 'string', input = 'function_0'),
-#                                                 list(name = 'AV_group_1', type = 'string', input = 'group'),
-#                                                 list(name = 'AV_group_2', type = 'string', input = 'group'),
-#                                                 list(name = 'AV_group_3', type = 'string', input = 'group'),
-#                                                 list(name = 'AV_group_4', type = 'string', input = 'group')),
+#     queryBuilder(data = df.data, filters = list(list(name = 'Trend', type = 'string', input = 'function_0')),
 #                  autoassign = FALSE,
 #                  default_condition = 'AND',
 #                  allow_empty = TRUE,
 #                  display_errors = TRUE,
 #                  display_empty_filter = FALSE
 #     )
+    queryBuilder(data = df.data, filters = list(list(name = 'Trend', type = 'string', input = 'function_0'),
+                                                list(name = 'AV-group_1', type = 'double', input = 'group2'),
+                                                list(name = 'AV-group_2', type = 'double', input = 'group2'),
+                                                list(name = 'AV-group_3', type = 'double', input = 'group2'),
+                                                list(name = 'AV-group_4', type = 'double', input = 'group2')),
+                 autoassign = FALSE,
+                 default_condition = 'AND',
+                 allow_empty = TRUE,
+                 display_errors = TRUE,
+                 display_empty_filter = FALSE
+    )
   })
 
   output$txtValidation <- renderUI({

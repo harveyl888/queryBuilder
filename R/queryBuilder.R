@@ -131,7 +131,11 @@ lookup <- function(id, operator, value) {
   if (value %in% c('true', 'false')) { value <- toupper(value) }
 
   if (operator %in% names(l.operators1)) {
-    return(paste(id, l.operators1[[operator]], value))
+    if (substring(operator, nchar(operator)) == '_') {
+      return(paste0('`', id, '` ', l.operators1[[operator]], ' `', value, '`'))
+    } else {
+      return(paste0('`', id, '` ', l.operators1[[operator]], ' ', value))
+    }
   }
   if (operator %in% names(l.operators2)) {
     return(paste0(l.operators2[[operator]], '(', id, ', ', value, ')'))

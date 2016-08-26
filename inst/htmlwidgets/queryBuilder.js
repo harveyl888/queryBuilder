@@ -26,7 +26,7 @@ HTMLWidgets.widget({
           myFilter.label = i.name;
           myFilter.type = i.type;
           if (i.hasOwnProperty('input')) {
-            if (i.input != 'selectize' && i.input != 'group' && i.input != 'function_0') {
+            if (i.input != 'selectize' && i.input != 'group' && i.input != 'group2' && i.input != 'function_0') {
               myFilter.input = i.input;
             }
           }
@@ -46,6 +46,30 @@ HTMLWidgets.widget({
             x.colnames.forEach(function(x) { selectizeOptions.push({ id: x })});
             myFilter.plugin_config = { "valueField" : "id", "labelField" : "id", "maxItems" : null, "create" : false, "plugins" : [ 'remove_button', 'drag_drop' ], "options" : selectizeOptions};
             myFilter.valueGetter = function(rule) { return rule.$el.find('.selectized').selectize()[0].selectize.items; };
+          } else if (i.input == 'group2') {
+            var optionValues2 = '';
+            x.data.forEach(function(j) {
+              if (j.input == 'group2') {
+                optionValues2 += '<option value="'+ j.name + '">' + j.name + '</option>';
+              }
+            });
+            myFilter.validation = { "callback" : function(value, rule) { return(true); } };
+            myFilter.input = function(rule, name) {
+              $operator_container = rule.$el.find('.rule-operator-container');
+              var myOptGroup = rule.$el.find('.rule-operator-container .form-control option:selected').closest('optgroup').attr('label');
+              var show_select = (myOptGroup == 'Group');
+              var show_text = !show_select;
+              var htmlOut =  '<select name = \"' + name + '_1\" class = \"form-control value-select\"' + (show_text ? ' style = \"display: none;\"' : '') + ' onchange=\"data_from_select(this)\"' + '>';
+              htmlOut += optionValues2;
+              htmlOut += '</select>';
+              htmlOut += '<input name = \"' + name + '_2\" class = \"form-control value-text\" type = \"text\"' + (show_select ? ' style=\"display: none;\"' : '') + 'onchange=\"data_from_text(this)\" onkeyup=\"data_from_text(this)\"' + '></input>';
+              return htmlOut;
+            };
+            myFilter.valueGetter = function(rule) {
+              return rule.$el.find('.rule-value-container').attr('data-value');
+
+            };
+
           } else if (i.input == 'select' || i.input == 'radio') {
             if (i.hasOwnProperty('values')) {
               var filterValues = [];
@@ -72,7 +96,7 @@ HTMLWidgets.widget({
             myFilter.operators = ['in', 'not_in'];
           } else if (i.input == 'function_0') {
             myFilter.operators = ['up', 'down'];
-          } else if (i.input == 'group') {
+          } else if (i.input == 'group' || i.input == 'group2') {
             myFilter.operators = opObj.compareGroups;
           } else if (i.input == 'select' || i.input == 'radio') {
             myFilter.operators = ['equal', 'not_equal', 'is_na', 'is_not_na'];
@@ -116,16 +140,53 @@ HTMLWidgets.widget({
                                                       }
                                                     });
 
-        var optionValues = '';
-        x.data.forEach(function(i) {if (i.input == 'group') {optionValues += '<option value="'+ i.name + '">' + i.name + '</option>';} });
+
+
+//        var optionValues = '';
+//        x.data.forEach(function(i) {if (i.input == 'group') {optionValues += '<option value="'+ i.name + '">' + i.name + '</option>';} });
+//        $(el).on('afterUpdateRuleOperator.queryBuilder', function(e, rule) {
+//                                                           if (rule.operator.optgroup == 'Group') {
+//                                                             $container = rule.$el.find('.rule-value-container');
+//                                                             $container.find('.form-control').each(function() {
+//                                                               $("<select />").attr({ class:"form-control", type:this.type, name:this.name}).append(optionValues).insertBefore(this);
+//                                                             }).remove();
+//                                                          }
+//        });
+
+
+        // Test code for group2 functionality
+
         $(el).on('afterUpdateRuleOperator.queryBuilder', function(e, rule) {
-                                                           if (rule.operator.optgroup == 'Group') {
-                                                             $container = rule.$el.find('.rule-value-container');
-                                                             $container.find('.form-control').each(function() {
-                                                               $("<select />").attr({ class:"form-control", type:this.type, name:this.name}).append(optionValues).insertBefore(this);
-                                                             }).remove();
-                                                           }
+            // If we can have GroupOps then we need to determine the type of operator and display the correct input
+          if (rule.$el.find('.rule-operator-container .form-control optgroup[label=Group]').html() !== null) {
+            var myOptGroup = rule.$el.find('.rule-operator-container .form-control option:selected').closest('optgroup').attr('label');
+
+            if (myOptGroup == 'Group') {
+              rule.$el.find('.rule-value-container .value-select').css("display", "inline");
+              rule.$el.find('.rule-value-container .value-text').css("display", "none");
+            } else {
+              rule.$el.find('.rule-value-container .value-select').css("display", "none");
+              rule.$el.find('.rule-value-container .value-text').css("display", "inline");
+            }
+          }
         });
+
+        data_from_select = function(id) {
+          $(id).parent().attr('data-value', $(id).find(":selected").val());
+        };
+
+        data_from_text = function(id) {
+          $(id).parent().attr('data-value', $(id).val());
+        };
+
+
+
+
+
+
+        // End of Test code for group2 functionality
+
+
 
 
         // for debugging
