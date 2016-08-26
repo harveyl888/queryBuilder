@@ -56,7 +56,6 @@ In addition to constructing the htmlwidget, an additional function called filter
 `filterTable(input$querybuilder_out, data, 'text')` returns the input to dplyr filter_ for element `querybuilder` on data frame `data`. 
 
 ## Example
-
 A Shiny example can be found under inst/examples/example01.  In this case part of the mtcars data are used with some additonal columns:
 -   mpg: mtcars mpg column with allowable range between the minimum and maximum values.
 -   disp: mtcars disp column with minimum value of 60.
@@ -68,4 +67,16 @@ A Shiny example can be found under inst/examples/example01.  In this case part o
 -   carb: selectize (can filter on multiple values).
 
 This example can also be found at http://162.243.57.47:3838/home/harvey/queryBuilder/
+
+## Experimental Features
+jQuery queryBuilder is a powerful tool and there are some features which are somewhat *experimental*.
+### Additional Functions
+A trending function has been added.  This will filter based on a series of values that increase or decrease.  The filter takes the form of
+```r
+list(name = 'Trend', type = 'string', input = 'function_0')
+```
+This instructs the builder to create a rule with the desired operators and a selectize, sortable output to hold the values.
+### Group Comparison
+If filters are added with an input that starts with `group` then they'll be treated in two different ways depending on the operator.  If the operator belongs to an optgroup called `Group` then the value can be chosen from a list of other inputs from the same group.  This allows for group comparison such as `Group_1 > Group_2`.  If the operator belongs to a different optgroup then the value is treated as a scalar such as `Group_1 > 12`.  This allows for complex rules to be built with minimal setup.  
+An example of each of these features can be found under inst/examples/example02.
 
