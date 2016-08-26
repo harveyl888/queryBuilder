@@ -40,7 +40,8 @@ HTMLWidgets.widget({
               myFilter.validation = filterValidation;
             }
           }
-          if (i.input == 'function_0') {
+          if (i.hasOwnProperty('input')) {
+                      if (i.input == 'function_0') {
             myFilter.plugin = 'selectize';
             selectizeOptions = [];
             x.colnames.forEach(function(x) { selectizeOptions.push({ id: x })});
@@ -89,7 +90,8 @@ HTMLWidgets.widget({
               myFilter.plugin_config = { "valueField" : "id", "labelField" : "id", "maxItems" : null, "create" : false, "options" : selectizeOptions };
               myFilter.valueGetter = function(rule) { return rule.$el.find('.selectized').selectize()[0].selectize.items; };
             }
-         } else if (i.type == 'date') {
+         }
+        } else if (i.type == 'date') {
            myFilter.plugin = 'datepicker';
            myFilter.plugin_config = { "format" : "yyyy/mm/dd", "todayBtn" : "linked", "todayHighlight" : true, "autoclose" : true };
           }
@@ -99,8 +101,10 @@ HTMLWidgets.widget({
             myFilter.operators = ['in', 'not_in'];
           } else if (i.input == 'function_0') {
             myFilter.operators = ['up', 'down'];
-          } else if (i.input.substring(0, 5) == 'group') {
-            myFilter.operators = opObj.compareGroups;
+          } else if (i.hasOwnProperty('input')) {
+            if (i.input.substring(0, 5) == 'group') {
+              myFilter.operators = opObj.compareGroups;
+            }
           } else if (i.input == 'select' || i.input == 'radio') {
             myFilter.operators = ['equal', 'not_equal', 'is_na', 'is_not_na'];
           } else if (i.hasOwnProperty('operators')) {
