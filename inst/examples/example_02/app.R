@@ -27,10 +27,10 @@ server <- function(input, output) {
 #                  display_empty_filter = FALSE
 #     )
     queryBuilder(data = df.data, filters = list(list(name = 'Trend', type = 'string', input = 'function_0'),
-                                                list(name = 'AV-group_1', type = 'double', input = 'group2'),
-                                                list(name = 'AV-group_2', type = 'double', input = 'group2'),
-                                                list(name = 'AV-group_3', type = 'double', input = 'group2'),
-                                                list(name = 'AV-group_4', type = 'double', input = 'group2')),
+                                                list(name = 'AV-group_1', type = 'double', input = 'group_2'),
+                                                list(name = 'AV-group_2', type = 'double', input = 'group_2'),
+                                                list(name = 'AV-group_3', type = 'double', input = 'group_3'),
+                                                list(name = 'AV-group_4', type = 'double', input = 'group_3')),
                  autoassign = FALSE,
                  default_condition = 'AND',
                  allow_empty = TRUE,

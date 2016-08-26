@@ -26,7 +26,7 @@ HTMLWidgets.widget({
           myFilter.label = i.name;
           myFilter.type = i.type;
           if (i.hasOwnProperty('input')) {
-            if (i.input != 'selectize' && i.input != 'group' && i.input != 'group2' && i.input != 'function_0') {
+            if (i.input != 'selectize' && i.input.substring(0, 5) != 'group' && i.input != 'function_0') {
               myFilter.input = i.input;
             }
           }
@@ -46,10 +46,13 @@ HTMLWidgets.widget({
             x.colnames.forEach(function(x) { selectizeOptions.push({ id: x })});
             myFilter.plugin_config = { "valueField" : "id", "labelField" : "id", "maxItems" : null, "create" : false, "plugins" : [ 'remove_button', 'drag_drop' ], "options" : selectizeOptions};
             myFilter.valueGetter = function(rule) { return rule.$el.find('.selectized').selectize()[0].selectize.items; };
-          } else if (i.input == 'group2') {
+          } else if (i.input.substring(0, 5) == 'group') {
             var optionValues2 = '';
             x.data.forEach(function(j) {
-              if (j.input == 'group2') {
+
+              console.log(j.input);
+
+              if (j.input == i.input) {
                 optionValues2 += '<option value="'+ j.name + '">' + j.name + '</option>';
               }
             });
@@ -96,7 +99,7 @@ HTMLWidgets.widget({
             myFilter.operators = ['in', 'not_in'];
           } else if (i.input == 'function_0') {
             myFilter.operators = ['up', 'down'];
-          } else if (i.input == 'group' || i.input == 'group2') {
+          } else if (i.input.substring(0, 5) == 'group') {
             myFilter.operators = opObj.compareGroups;
           } else if (i.input == 'select' || i.input == 'radio') {
             myFilter.operators = ['equal', 'not_equal', 'is_na', 'is_not_na'];
@@ -140,21 +143,8 @@ HTMLWidgets.widget({
                                                       }
                                                     });
 
-
-
-//        var optionValues = '';
-//        x.data.forEach(function(i) {if (i.input == 'group') {optionValues += '<option value="'+ i.name + '">' + i.name + '</option>';} });
-//        $(el).on('afterUpdateRuleOperator.queryBuilder', function(e, rule) {
-//                                                           if (rule.operator.optgroup == 'Group') {
-//                                                             $container = rule.$el.find('.rule-value-container');
-//                                                             $container.find('.form-control').each(function() {
-//                                                               $("<select />").attr({ class:"form-control", type:this.type, name:this.name}).append(optionValues).insertBefore(this);
-//                                                             }).remove();
-//                                                          }
-//        });
-
-
-        // Test code for group2 functionality
+        // Add group functionality
+        // Change input to select or text based on operator
 
         $(el).on('afterUpdateRuleOperator.queryBuilder', function(e, rule) {
             // If we can have GroupOps then we need to determine the type of operator and display the correct input
@@ -178,13 +168,6 @@ HTMLWidgets.widget({
         data_from_text = function(id) {
           $(id).parent().attr('data-value', $(id).val());
         };
-
-
-
-
-
-
-        // End of Test code for group2 functionality
 
 
 
