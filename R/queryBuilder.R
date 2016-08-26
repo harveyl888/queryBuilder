@@ -41,9 +41,8 @@ queryBuilder <- function(data = NULL,
     }
   } else {
     if (length(filters) == 0) return()  # No filters - do not construct
-    nonFunctionFilters <- unlist(lapply(filters, function(x) if(!x$input %in% c('function_0')) x$name))
-    if (!all(nonFunctionFilters %in% names(data))) return()
-#    if (!all(sapply(filters, function(x) x['name']) %in% names(data))) return()
+#     nonFunctionFilters <- unlist(lapply(filters, function(x) if(!x$input %in% c('function_0')) x$name))
+#     if (!all(nonFunctionFilters %in% names(data))) return()
   }
   for (i in 1:length(filters)) {
     if (filters[[i]]['input'] %in% c('select', 'selectize', 'radio')) {
