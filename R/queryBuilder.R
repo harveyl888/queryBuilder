@@ -46,9 +46,11 @@ queryBuilder <- function(data = NULL,
   }
   for (i in 1:length(filters)) {
     if (filters[[i]]['input'] %in% c('select', 'selectize', 'radio')) {
-      uniqueVals <- unique(data[[filters[[i]][['name']]]])
-      uniqueVals <- sort(uniqueVals[!is.na(uniqueVals)])  # sort and get rid of NA value if present
-      filters[[i]][['values']] <- uniqueVals
+      if (!'values' %in% names(filters[[i]])) {
+        uniqueVals <- unique(data[[filters[[i]][['name']]]])
+        uniqueVals <- sort(uniqueVals[!is.na(uniqueVals)])  # sort and get rid of NA value if present
+        filters[[i]][['values']] <- uniqueVals
+      }
     }
   }
 

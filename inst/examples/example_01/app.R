@@ -19,7 +19,7 @@ server <- function(input, output) {
   output$querybuilder <- renderQueryBuilder({
     queryBuilder(data = df.data, filters = list(list(name = 'mpg', type = 'double', min=min(mtcars$mpg), max=max(mtcars$mpg), step=0.1),
                                                 list(name = 'disp', type = 'integer', min=60, step=1),
-                                                list(name = 'gear', type = 'integer', input = 'select'),
+                                                list(name = 'gear', type = 'integer', input = 'select', values = c(2, 3, 4)),
                                                 list(name = 'name', type = 'string'),
                                                 list(name = 'nameFactor', type = 'string', input = 'selectize'),
                                                 list(name = 'date', type = 'date'),
