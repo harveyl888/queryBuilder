@@ -26,7 +26,7 @@ server <- function(input, output) {
 #                  display_errors = TRUE,
 #                  display_empty_filter = FALSE
 #     )
-    queryBuilder(data = df.data, filters = list(list(name = 'Trend', type = 'string', input = 'function_0'),
+    queryBuilder(data = df.data, filters = list(list(name = 'Trend', type = 'string', input = 'function_0', values = c('AV-group_1', 'AV-group_4')),
                                                 list(name = 'AV-group_1', type = 'double', input = 'group_2'),
                                                 list(name = 'AV-group_2', type = 'double', input = 'group_2'),
                                                 list(name = 'AV-group_3', type = 'double', input = 'group_3'),
