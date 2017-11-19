@@ -30,3 +30,8 @@ dependencies:
   src: htmlwidgets/lib
   script: ./plugins/datepicker/bootstrap-datepicker.min.js
   stylesheet: ./plugins/datepicker/bootstrap-datepicker3.min.css
+- name: chosen
+  version: 1.8.2
+  src: htmlwidgets/lib
+  script: ./chosen/chosen.jquery.min.js
+  stylesheet: ./chosen/chosen.min.css

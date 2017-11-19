@@ -178,7 +178,11 @@ HTMLWidgets.widget({
         };
 
 
-
+        // Add jquery chosen functionality to all select boxes
+        $(el).on('afterCreateRuleInput.queryBuilder', function(e, rule) {
+          $(el).find(".rule-filter-container .form-control").addClass("chosen-select");
+          $(".chosen-select").chosen();
+        });
 
         // for debugging
         window.filterout = filter;
@@ -201,6 +205,7 @@ HTMLWidgets.widget({
           Shiny.onInputChange(el.id + '_out', $(el).queryBuilder('getRules'));
           Shiny.onInputChange(el.id + '_validate', $(el).queryBuilder('validate'));
         });
+
 
       },
 
