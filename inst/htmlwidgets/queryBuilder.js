@@ -179,10 +179,12 @@ HTMLWidgets.widget({
 
 
         // Add jquery chosen functionality to all select boxes
-        $(el).on('afterCreateRuleInput.queryBuilder', function(e, rule) {
-          $(el).find(".rule-filter-container .form-control").addClass("chosen-select");
-          $(".chosen-select").chosen();
-        });
+        if(x.settings.chosen) {
+          $(el).on('afterCreateRuleInput.queryBuilder', function(e, rule) {
+            $(el).find(".rule-filter-container .form-control").addClass("chosen-select");
+            $(".chosen-select").chosen();
+          });
+        }
 
         // for debugging
         window.filterout = filter;
