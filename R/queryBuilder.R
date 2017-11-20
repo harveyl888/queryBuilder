@@ -15,6 +15,7 @@ queryBuilder <- function(data = NULL,
                          allow_empty = FALSE,
                          display_errors = TRUE,
                          display_empty_filter = TRUE,
+                         chosen = FALSE,
                          width = NULL,
                          height = NULL) {
 
@@ -58,7 +59,8 @@ queryBuilder <- function(data = NULL,
   settings = list(default_condition = default_condition,
                   allow_empty = allow_empty,
                   display_errors = display_errors,
-                  display_empty_filter = display_empty_filter)
+                  display_empty_filter = display_empty_filter,
+                  chosen = chosen)
 
   # forward options using x
   x = list(

@@ -35,7 +35,8 @@ server <- function(input, output) {
                  default_condition = 'AND',
                  allow_empty = TRUE,
                  display_errors = TRUE,
-                 display_empty_filter = FALSE
+                 display_empty_filter = FALSE,
+                 chosen = TRUE
     )
   })
 

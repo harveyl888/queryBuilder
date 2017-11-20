@@ -24,6 +24,7 @@ queryBuilder can take a number of arguments:
 -   `allow_empty`: Boolean.  If set to true then no validation error is thrown when the builder is entirely empty (default = false).
 -   `display_errors`: Boolean.  If set to true then an icon and tooltip explaining the error will be displayed (default = true).
 -   `display_empty_filter`: Boolean.  If true then an empty option will be included for each rule.  If false then the first filter will be selected when creating the rule (default = true).
+-   `chosen`: Boolean.  Use jquery chosen (https://github.com/harvesthq/chosen) to select filter for rules
 
 ## Filters
 jQuery QueryBuilder can create powerful queries from a series of inputs.  The `filters` option of this widget can be used to specify specific columns of a data frame and determine how they behave in jQuery QueryBuilder.  It is constructed as a list of lists containing a number of named attributes.  
