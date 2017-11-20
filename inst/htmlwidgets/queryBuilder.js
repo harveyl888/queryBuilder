@@ -97,7 +97,7 @@ HTMLWidgets.widget({
          }
         } else if (i.type == 'date') {
            myFilter.plugin = 'datepicker';
-           myFilter.plugin_config = { "format" : "yyyy/mm/dd", "todayBtn" : "linked", "todayHighlight" : true, "autoclose" : true };
+           myFilter.plugin_config = { "format" : i.mask, "todayBtn" : "linked", "todayHighlight" : true, "autoclose" : true };
           }
 
           // Add operators to filter
@@ -181,7 +181,9 @@ HTMLWidgets.widget({
         // Add jquery chosen functionality to all select boxes
         if(x.settings.chosen) {
           $(el).on('afterCreateRuleInput.queryBuilder', function(e, rule) {
-            $(el).find(".rule-filter-container .form-control").addClass("chosen-select");
+            $(el).find("select").addClass("chosen-select");
+            $(el).find("value-select").addClass("chosen-select");
+//            $(el).find(".rule-filter-container .form-control").addClass("chosen-select");
             $(".chosen-select").chosen();
           });
         }

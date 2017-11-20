@@ -22,7 +22,7 @@ server <- function(input, output) {
                                                 list(name = 'gear', type = 'integer', input = 'select', values = c(2, 3, 4)),
                                                 list(name = 'name', type = 'string'),
                                                 list(name = 'nameFactor', type = 'string', input = 'selectize'),
-                                                list(name = 'date', type = 'date'),
+                                                list(name = 'date', type = 'date', mask = 'yy-mm-dd'),
                                                 list(name = 'logical', type = 'boolean', input = 'radio'),
                                                 list(name = 'carb', type = 'string', input = 'selectize')),
                  autoassign = FALSE,
