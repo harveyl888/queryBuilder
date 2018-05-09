@@ -29,15 +29,20 @@ queryBuilder <- function(data = NULL,
       if(c == 'numeric') {
         filters[[length(filters) + 1]] <- list(name = names(c), type = 'double')
       } else if (c == 'integer') {
-        filters[[length(filters) + 1]] <- list(name = names(c), type = 'integer')
+        filters[[length(filters) + 1]] <- list(name = names(c),
+                                               type = 'integer')
       } else if (c == 'character') {
         filters[[length(filters) + 1]] <- list(name = names(c), type = 'string')
       } else if (c == 'factor') {
-        filters[[length(filters) + 1]] <- list(name = names(c), type = 'string', input = 'selectize')
+        filters[[length(filters) + 1]] <- list(name = names(c), type = 'string',
+                                               input = 'selectize')
       } else if (c == 'Date') {
         filters[[length(filters) + 1]] <- list(name = names(c), type = 'date')
       } else if (c == 'logical') {
-        filters[[length(filters) + 1]] <- list(name = names(c), type = 'boolean', input = 'radio')
+        filters[[length(filters) + 1]] <- list(name = names(c),
+                                               type = 'boolean',
+                                               input = 'radio',
+                                               values = c(TRUE, FALSE))
       }
     }
   } else {
@@ -45,6 +50,7 @@ queryBuilder <- function(data = NULL,
 #     nonFunctionFilters <- unlist(lapply(filters, function(x) if(!x$input %in% c('function_0')) x$name))
 #     if (!all(nonFunctionFilters %in% names(data))) return()
   }
+
   for (i in 1:length(filters)) {
     if (filters[[i]]['input'] %in% c('select', 'selectize', 'radio')) {
       if (!'values' %in% names(filters[[i]])) {
@@ -54,7 +60,6 @@ queryBuilder <- function(data = NULL,
       }
     }
   }
-
 
   settings = list(default_condition = default_condition,
                   allow_empty = allow_empty,
