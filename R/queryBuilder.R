@@ -4,6 +4,7 @@
 #'
 #' @param data data frame
 #' @param filters list of lists containing filter parameters
+#' @param rules A list of queryBuilder rules
 #'
 #' @import htmlwidgets
 #'
@@ -11,6 +12,7 @@
 queryBuilder <- function(data = NULL,
                          autoassign = FALSE,
                          filters = list(),
+                         rules = NULL,
                          default_condition = 'AND',
                          allow_empty = FALSE,
                          display_errors = TRUE,
@@ -70,6 +72,7 @@ queryBuilder <- function(data = NULL,
   # forward options using x
   x = list(
     data = filters,
+    rules = rules,
     colnames = names(data),
     settings = settings
   )
@@ -119,6 +122,7 @@ filterTable <- function(filters = NULL, data = NULL, output = c('table', 'text')
 #' @return string representation of a single filter
 #'
 lookup <- function(id, operator, value) {
+  id <- paste0("`", id, "`")
   ## triple style operator, eg a = 1
   l.operators1 <- list('equal' = '==', 'not_equal' = '!=', 'less' = '<', 'less_or_equal' = '<=', 'greater' = '>', 'greater_or_equal' = '>=',
                        'equal_' = '==', 'not_equal_' = '!=', 'less_' = '<', 'less_or_equal_' = '<=', 'greater_' = '>', 'greater_or_equal_' = '>=')
@@ -140,9 +144,9 @@ lookup <- function(id, operator, value) {
 
   if (operator %in% names(l.operators1)) {
     if (substring(operator, nchar(operator)) == '_') {
-      return(paste0('`', id, '` ', l.operators1[[operator]], ' `', value, '`'))
+      return(paste0(id, l.operators1[[operator]], ' `', value, '`'))
     } else {
-      return(paste0('`', id, '` ', l.operators1[[operator]], ' ', value))
+      return(paste0(id, l.operators1[[operator]], ' ', value))
     }
   }
   if (operator %in% names(l.operators2)) {

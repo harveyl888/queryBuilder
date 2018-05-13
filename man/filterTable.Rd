@@ -16,4 +16,3 @@ filterTable(filters = NULL, data = NULL, output = c("table", "text"))
 \description{
 filter a data frame using the output of a queryBuilder htmlWidget
 }
-

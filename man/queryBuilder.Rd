@@ -5,15 +5,17 @@
 \title{queryBuilder}
 \usage{
 queryBuilder(data = NULL, autoassign = FALSE, filters = list(),
-  default_condition = "AND", allow_empty = FALSE, display_errors = TRUE,
-  display_empty_filter = TRUE, width = NULL, height = NULL)
+  rules = NULL, default_condition = "AND", allow_empty = FALSE,
+  display_errors = TRUE, display_empty_filter = TRUE, chosen = FALSE,
+  width = NULL, height = NULL)
 }
 \arguments{
 \item{data}{data frame}
 
 \item{filters}{list of lists containing filter parameters}
+
+\item{rules}{A list of queryBuilder rules}
 }
 \description{
 create a queryBuilder widget from a series of filters
 }
-

@@ -15,4 +15,3 @@ string representation of all filters combined
 \description{
 internal recursive function to process filter
 }
-

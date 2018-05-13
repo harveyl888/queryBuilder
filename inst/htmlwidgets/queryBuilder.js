@@ -195,6 +195,7 @@ HTMLWidgets.widget({
         // build the query
         $(el).queryBuilder({
           filters: filter,
+          rules: x.rules,
           default_condition: x.settings.default_condition,
           allow_empty: x.settings.allow_empty,
           display_errors: x.settings.display_errors,
