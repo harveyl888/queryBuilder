@@ -58,7 +58,7 @@ queryBuilder <- function(data = NULL,
       if (!'values' %in% names(filters[[i]])) {
         uniqueVals <- unique(data[[filters[[i]][['name']]]])
         uniqueVals <- sort(uniqueVals[!is.na(uniqueVals)])  # sort and get rid of NA value if present
-        filters[[i]][['values']] <- uniqueVals
+        filters[[i]][['values']] <- as.list(uniqueVals)
       }
     }
   }
