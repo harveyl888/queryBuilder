@@ -200,9 +200,9 @@ recurseFilter <- function(filter = NULL) {
         value <- 0
       } else if (filter$rules[[i]]$type == 'date') {  # treat dates
         if (length(filter$rules[[i]]$value) > 1) {
-          value <- lapply(filter$rules[[i]]$value, function(x) paste0('as.Date(\"', x, '\")'))  # date range
+          value <- lapply(filter$rules[[i]]$value, function(x) paste0('as.Date(\"', x, '\", "%m/%d/%Y")'))  # date range
         } else {
-          value <- paste0('as.Date(\"', filter$rules[[i]]$value, '\")')  # single date
+          value <- paste0('as.Date(\"', filter$rules[[i]]$value, '\", "%m/%d/%Y")')  # single date
         }
       } else if (filter$rules[[i]]$type == 'string') {  # enclose strings in quotes
         if (length(filter$rules[[i]]$value) > 1) {
