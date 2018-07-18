@@ -9,9 +9,9 @@ HTMLWidgets.widget({
     return {
 
       renderValue: function(x) {
-
         // for debugging
         window.widgetInput = x;
+        window.widgetElement = el;
 
         var opObj = {};
         opObj.text = ['equal', 'not_equal', 'begins_with', 'not_begins_with', 'ends_with', 'not_ends_with', 'contains', 'not_contains', 'is_na', 'is_not_na'];
@@ -192,16 +192,21 @@ HTMLWidgets.widget({
         window.filterout = filter;
         window.operatorout = operator;
 
-        // build the query
-        $(el).queryBuilder({
-          filters: filter,
-          rules: x.rules,
-          default_condition: x.settings.default_condition,
-          allow_empty: x.settings.allow_empty,
-          display_errors: x.settings.display_errors,
-          display_empty_filter: x.settings.display_empty_filter,
-          operators: operator
-        });
+        if (jQuery(el).data('queryBuilder'))
+          $(el).queryBuilder('setFilters', true, filter);
+        else {
+          // build the query
+          $(el).queryBuilder({
+            filters: filter,
+            rules: x.rules,
+            default_condition: x.settings.default_condition,
+            allow_empty: x.settings.allow_empty,
+            display_errors: x.settings.display_errors,
+            display_empty_filter: x.settings.display_empty_filter,
+            operators: operator
+          });
+        }
+
 
         $(el).css("overflow", "auto");
 
