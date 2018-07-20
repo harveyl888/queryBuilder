@@ -1,6 +1,6 @@
 Package: queryBuilder
 Title: queryBuilder htmlwidget
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: c(person("Harvey", "Lieberman", email = "harvey.lieberman@gmail.com", role = c("aut", "cre")),person("Damien Sorel", role = c("aut", "cph"), comment = "jQuery-QueryBuilder javascript library"))
 Description: htmlwidget for jQuery-QueryBuilder, a jQuery plugin offering an interface to create complex queries
 Depends:
