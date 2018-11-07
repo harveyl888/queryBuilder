@@ -4,6 +4,7 @@
 #'
 #' @param data data frame
 #' @param filters list of lists containing filter parameters
+#' @param rules A list of queryBuilder rules
 #'
 #' @import htmlwidgets
 #'
@@ -11,6 +12,7 @@
 queryBuilder <- function(data = NULL,
                          autoassign = FALSE,
                          filters = list(),
+                         rules = NULL,
                          default_condition = 'AND',
                          allow_empty = FALSE,
                          display_errors = TRUE,
@@ -29,15 +31,20 @@ queryBuilder <- function(data = NULL,
       if(c == 'numeric') {
         filters[[length(filters) + 1]] <- list(name = names(c), type = 'double')
       } else if (c == 'integer') {
-        filters[[length(filters) + 1]] <- list(name = names(c), type = 'integer')
+        filters[[length(filters) + 1]] <- list(name = names(c),
+                                               type = 'integer')
       } else if (c == 'character') {
         filters[[length(filters) + 1]] <- list(name = names(c), type = 'string')
       } else if (c == 'factor') {
-        filters[[length(filters) + 1]] <- list(name = names(c), type = 'string', input = 'selectize')
+        filters[[length(filters) + 1]] <- list(name = names(c), type = 'string',
+                                               input = 'selectize')
       } else if (c == 'Date') {
         filters[[length(filters) + 1]] <- list(name = names(c), type = 'date')
       } else if (c == 'logical') {
-        filters[[length(filters) + 1]] <- list(name = names(c), type = 'boolean', input = 'radio')
+        filters[[length(filters) + 1]] <- list(name = names(c),
+                                               type = 'boolean',
+                                               input = 'radio',
+                                               values = c(TRUE, FALSE))
       }
     }
   } else {
@@ -45,16 +52,16 @@ queryBuilder <- function(data = NULL,
 #     nonFunctionFilters <- unlist(lapply(filters, function(x) if(!x$input %in% c('function_0')) x$name))
 #     if (!all(nonFunctionFilters %in% names(data))) return()
   }
+
   for (i in 1:length(filters)) {
     if (filters[[i]]['input'] %in% c('select', 'selectize', 'radio')) {
       if (!'values' %in% names(filters[[i]])) {
         uniqueVals <- unique(data[[filters[[i]][['name']]]])
         uniqueVals <- sort(uniqueVals[!is.na(uniqueVals)])  # sort and get rid of NA value if present
-        filters[[i]][['values']] <- uniqueVals
+        filters[[i]][['values']] <- as.list(uniqueVals)
       }
     }
   }
-
 
   settings = list(default_condition = default_condition,
                   allow_empty = allow_empty,
@@ -65,6 +72,7 @@ queryBuilder <- function(data = NULL,
   # forward options using x
   x = list(
     data = filters,
+    rules = rules,
     colnames = names(data),
     settings = settings
   )
@@ -114,6 +122,7 @@ filterTable <- function(filters = NULL, data = NULL, output = c('table', 'text')
 #' @return string representation of a single filter
 #'
 lookup <- function(id, operator, value) {
+  id <- paste0("`", id, "`")
   ## triple style operator, eg a = 1
   l.operators1 <- list('equal' = '==', 'not_equal' = '!=', 'less' = '<', 'less_or_equal' = '<=', 'greater' = '>', 'greater_or_equal' = '>=',
                        'equal_' = '==', 'not_equal_' = '!=', 'less_' = '<', 'less_or_equal_' = '<=', 'greater_' = '>', 'greater_or_equal_' = '>=')
@@ -135,9 +144,9 @@ lookup <- function(id, operator, value) {
 
   if (operator %in% names(l.operators1)) {
     if (substring(operator, nchar(operator)) == '_') {
-      return(paste0('`', id, '` ', l.operators1[[operator]], ' `', value, '`'))
+      return(paste0(id, l.operators1[[operator]], ' `', value, '`'))
     } else {
-      return(paste0('`', id, '` ', l.operators1[[operator]], ' ', value))
+      return(paste0(id, l.operators1[[operator]], ' ', value))
     }
   }
   if (operator %in% names(l.operators2)) {
@@ -191,9 +200,9 @@ recurseFilter <- function(filter = NULL) {
         value <- 0
       } else if (filter$rules[[i]]$type == 'date') {  # treat dates
         if (length(filter$rules[[i]]$value) > 1) {
-          value <- lapply(filter$rules[[i]]$value, function(x) paste0('as.Date(\"', x, '\")'))  # date range
+          value <- lapply(filter$rules[[i]]$value, function(x) paste0('as.Date(\"', x, '\", "%m/%d/%Y")'))  # date range
         } else {
-          value <- paste0('as.Date(\"', filter$rules[[i]]$value, '\")')  # single date
+          value <- paste0('as.Date(\"', filter$rules[[i]]$value, '\", "%m/%d/%Y")')  # single date
         }
       } else if (filter$rules[[i]]$type == 'string') {  # enclose strings in quotes
         if (length(filter$rules[[i]]$value) > 1) {

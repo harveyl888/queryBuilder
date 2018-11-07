@@ -9,4 +9,3 @@ upTrend(...)
 \description{
 upTrend - analysis helper function
 }
-

@@ -19,4 +19,3 @@ string representation of a single filter
 \description{
 internal function to create a filter condition based on id, operator and value
 }
-

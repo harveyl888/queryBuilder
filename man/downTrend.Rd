@@ -9,4 +9,3 @@ downTrend(...)
 \description{
 downTrend - analysis helper function
 }
-
