@@ -2,16 +2,24 @@
 #'
 #' create a queryBuilder widget from a series of filters
 #'
-#' @param data data frame
+#' @param data data frame (optional) used when autoassign is true
 #' @param filters list of lists containing filter parameters
+#' @param autoassign Boolean.  If true then filter names and types will be assigned based on data frame.  In order to use
+#'     this `data` must also be supplied
 #' @param rules A list of queryBuilder rules
+#' @param default_condition supply the default condition (`AND` or `OR`)
+#' @param allow_empty Boolean.  If true then no validation error is thrown when the builder is entirely empty
+#' @param display_errors Boolean.  If true then an icon and tooltip explaining the error will be displayed
+#' @param display_empty_filter Boolean.  If true then empty option will be included for each rule.  If false
+#'     then the first filter will be selected when creating the rule
+#' @param chosen Boolean.  If true then use jquery chosen (https://github.com/harvesthq/chosen) to select filter for rules
 #'
 #' @import htmlwidgets
 #'
 #' @export
 queryBuilder <- function(data = NULL,
-                         autoassign = FALSE,
                          filters = list(),
+                         autoassign = FALSE,
                          rules = NULL,
                          default_condition = 'AND',
                          allow_empty = FALSE,
@@ -21,9 +29,8 @@ queryBuilder <- function(data = NULL,
                          width = NULL,
                          height = NULL) {
 
-  if (is.null(data)) return()
-
   if(autoassign == TRUE) {
+    if (is.null(data)) return(NULL)
     filters <- list()
     columnTypes <- sapply(data, class)
     for (i in 1:length(columnTypes)) {
@@ -56,9 +63,13 @@ queryBuilder <- function(data = NULL,
   for (i in 1:length(filters)) {
     if (filters[[i]]['input'] %in% c('select', 'selectize', 'radio')) {
       if (!'values' %in% names(filters[[i]])) {
-        uniqueVals <- unique(data[[filters[[i]][['name']]]])
-        uniqueVals <- sort(uniqueVals[!is.na(uniqueVals)])  # sort and get rid of NA value if present
-        filters[[i]][['values']] <- as.list(uniqueVals)
+        if (is.null(data) | !filters[[i]][['name']] %in% names(data)) {
+          filters[[i]]['input'] <- NULL  ## no choices available - reset input
+        } else {
+          uniqueVals <- unique(data[[filters[[i]][['name']]]])
+          uniqueVals <- sort(uniqueVals[!is.na(uniqueVals)])  # sort and get rid of NA value if present
+          filters[[i]][['values']] <- as.list(uniqueVals)
+        }
       }
     }
   }
@@ -73,7 +84,6 @@ queryBuilder <- function(data = NULL,
   x = list(
     data = filters,
     rules = rules,
-    colnames = names(data),
     settings = settings
   )
 
@@ -96,6 +106,8 @@ queryBuilder <- function(data = NULL,
 #' @param output string return either a filtered data frame (table) or a text representation of the filter (text)
 #'
 #' @import dplyr
+#' @import rlang
+#'
 #' @export
 filterTable <- function(filters = NULL, data = NULL, output = c('table', 'text')) {
   if (is.null(filters) | is.null(data)) return(data)
@@ -104,7 +116,7 @@ filterTable <- function(filters = NULL, data = NULL, output = c('table', 'text')
   if (output == 'text') {
     return(f)
   } else if (output == 'table') {
-    df <- data %>% dplyr::rowwise() %>% dplyr::filter_(f)
+    df <- data %>% dplyr::rowwise() %>% dplyr::filter(!!rlang::parse_expr(f))
     return(df)
   } else {
     return()
