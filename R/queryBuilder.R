@@ -114,7 +114,7 @@ filterTable <- function(filters = NULL, data = NULL, output = c('table', 'text')
   if (output == 'text') {
     return(f)
   } else if (output == 'table') {
-    df <- data %>% dplyr::rowwise() %>% dplyr::filter_(f)
+    df <- data %>% dplyr::rowwise() %>% dplyr::filter(!!rlang::parse_expr(f))
     return(df)
   } else {
     return()
