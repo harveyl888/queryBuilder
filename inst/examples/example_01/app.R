@@ -51,6 +51,11 @@ server <- function(input, output) {
     input$querybuilder_out
   })
 
+  output$txtSQL <- renderPrint({
+    req(input$querybuilder_validate)
+    input$querybuilder_sql
+  })
+
 
   output$dt <- renderTable({
     req(input$querybuilder_validate)
@@ -73,7 +78,8 @@ ui <- shinyUI(
     fluidRow(tableOutput('dt')),
     hr(),
     h3("Output Filter List", style="color:blue"),
-    verbatimTextOutput('txtFilterList')
+    verbatimTextOutput('txtFilterList'),
+    verbatimTextOutput('txtSQL')
   )
 )
 
