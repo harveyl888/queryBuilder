@@ -6,8 +6,9 @@ Description: htmlwidget for jQuery-QueryBuilder, a jQuery plugin offering an int
 Depends:
     R (>= 3.3.0),
     dplyr (>= 0.7.4),
-    htmlwidgets
+    rlang (>= 0.2.99),
+    htmlwidgets (>= 1.3)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0

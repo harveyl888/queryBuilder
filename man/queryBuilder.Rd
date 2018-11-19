@@ -4,17 +4,31 @@
 \alias{queryBuilder}
 \title{queryBuilder}
 \usage{
-queryBuilder(data = NULL, autoassign = FALSE, filters = list(),
+queryBuilder(data = NULL, filters = list(), autoassign = FALSE,
   rules = NULL, default_condition = "AND", allow_empty = FALSE,
   display_errors = TRUE, display_empty_filter = TRUE, chosen = FALSE,
   width = NULL, height = NULL)
 }
 \arguments{
-\item{data}{data frame}
+\item{data}{data frame (optional) used when autoassign is true}
 
 \item{filters}{list of lists containing filter parameters}
 
+\item{autoassign}{Boolean.  If true then filter names and types will be assigned based on data frame.  In order to use
+this `data` must also be supplied}
+
 \item{rules}{A list of queryBuilder rules}
+
+\item{default_condition}{supply the default condition (`AND` or `OR`)}
+
+\item{allow_empty}{Boolean.  If true then no validation error is thrown when the builder is entirely empty}
+
+\item{display_errors}{Boolean.  If true then an icon and tooltip explaining the error will be displayed}
+
+\item{display_empty_filter}{Boolean.  If true then empty option will be included for each rule.  If false
+then the first filter will be selected when creating the rule}
+
+\item{chosen}{Boolean.  If true then use jquery chosen (https://github.com/harvesthq/chosen) to select filter for rules}
 }
 \description{
 create a queryBuilder widget from a series of filters

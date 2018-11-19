@@ -106,6 +106,8 @@ queryBuilder <- function(data = NULL,
 #' @param output string return either a filtered data frame (table) or a text representation of the filter (text)
 #'
 #' @import dplyr
+#' @import rlang
+#'
 #' @export
 filterTable <- function(filters = NULL, data = NULL, output = c('table', 'text')) {
   if (is.null(filters) | is.null(data)) return(data)
