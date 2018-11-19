@@ -12,6 +12,11 @@ server <- function(input, output) {
     queryBuilder(filters = list(list(name = 'name', type = 'string', input = 'selectize', values = c('bob', 'alice')),
                                 list(name = 'name_no_vals', type = 'string', input = 'selectize'),
                                 list(name = 'id', type = 'string')),
+                 rules = jsonlite::toJSON(list(
+                   condition = 'OR',
+                   rules = list(list(id = 'id', operator = 'equal', value = 'my id'),
+                                list(id = 'name', operator = 'in', value = list('bob')))),
+                   auto_unbox = TRUE),
                  autoassign = FALSE,
                  default_condition = 'AND',
                  allow_empty = TRUE,
