@@ -44,11 +44,11 @@ HTMLWidgets.widget({
                       if (i.input == 'function_0') {
             myFilter.plugin = 'selectize';
             selectizeOptions = [];
-            if (i.hasOwnProperty('values')) {
+//            if (i.hasOwnProperty('values')) {
               i.values.forEach(function(x) { selectizeOptions.push({ id: x })});
-            } else {
-            x.colnames.forEach(function(x) { selectizeOptions.push({ id: x })});
-            }
+//            } else {
+//            x.colnames.forEach(function(x) { selectizeOptions.push({ id: x })});
+//            }
             myFilter.plugin_config = { "valueField" : "id", "labelField" : "id", "maxItems" : null, "create" : false, "plugins" : [ 'remove_button', 'drag_drop' ], "options" : selectizeOptions};
             myFilter.valueGetter = function(rule) { return rule.$el.find('.selectized').selectize()[0].selectize.items; };
           } else if (i.input.substring(0, 5) == 'group') {

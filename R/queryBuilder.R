@@ -21,7 +21,7 @@ queryBuilder <- function(data = NULL,
                          width = NULL,
                          height = NULL) {
 
-  if (is.null(data)) return()
+#  if (is.null(data)) return()
 
   if(autoassign == TRUE) {
     filters <- list()
@@ -73,7 +73,7 @@ queryBuilder <- function(data = NULL,
   x = list(
     data = filters,
     rules = rules,
-    colnames = names(data),
+    # colnames = names(data),
     settings = settings
   )
 
