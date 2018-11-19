@@ -2,7 +2,7 @@
 #'
 #' create a queryBuilder widget from a series of filters
 #'
-#' @param data data frame
+#' @param data data frame (optional) used when autoassign is true
 #' @param filters list of lists containing filter parameters
 #' @param rules A list of queryBuilder rules
 #'
@@ -24,6 +24,7 @@ queryBuilder <- function(data = NULL,
 #  if (is.null(data)) return()
 
   if(autoassign == TRUE) {
+    if (is.null(data)) return(NULL)
     filters <- list()
     columnTypes <- sapply(data, class)
     for (i in 1:length(columnTypes)) {
