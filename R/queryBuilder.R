@@ -4,14 +4,22 @@
 #'
 #' @param data data frame (optional) used when autoassign is true
 #' @param filters list of lists containing filter parameters
+#' @param autoassign Boolean.  If true then filter names and types will be assigned based on data frame.  In order to use
+#'     this `data` must also be supplied
 #' @param rules A list of queryBuilder rules
+#' @param default_condition supply the default condition (`AND` or `OR`)
+#' @param allow_empty Boolean.  If true then no validation error is thrown when the builder is entirely empty
+#' @param display_errors Boolean.  If true then an icon and tooltip explaining the error will be displayed
+#' @param display_empty_filter Boolean.  If true then empty option will be included for each rule.  If false
+#'     then the first filter will be selected when creating the rule
+#' @param chosen Boolean.  If true then use jquery chosen (https://github.com/harvesthq/chosen) to select filter for rules
 #'
 #' @import htmlwidgets
 #'
 #' @export
 queryBuilder <- function(data = NULL,
-                         autoassign = FALSE,
                          filters = list(),
+                         autoassign = FALSE,
                          rules = NULL,
                          default_condition = 'AND',
                          allow_empty = FALSE,
@@ -20,8 +28,6 @@ queryBuilder <- function(data = NULL,
                          chosen = FALSE,
                          width = NULL,
                          height = NULL) {
-
-#  if (is.null(data)) return()
 
   if(autoassign == TRUE) {
     if (is.null(data)) return(NULL)
@@ -78,7 +84,6 @@ queryBuilder <- function(data = NULL,
   x = list(
     data = filters,
     rules = rules,
-    # colnames = names(data),
     settings = settings
   )
 
