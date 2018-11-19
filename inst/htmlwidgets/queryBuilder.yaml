@@ -35,3 +35,7 @@ dependencies:
   src: htmlwidgets/lib
   script: ./chosen/chosen.jquery.min.js
   stylesheet: ./chosen/chosen.min.css
+- name: sql-support
+  version: 0.1
+  src: htmlwidgets/lib
+  script: ./sql-support/plugin.js
