@@ -33,7 +33,7 @@ queryBuilder <- function(data = NULL,
     if (is.null(data)) return(NULL)
     filters <- list()
     columnTypes <- sapply(data, class)
-    for (i in 1:length(columnTypes)) {
+    for (i in seq_along(columnTypes)) {
       c <- columnTypes[i]
       if(c == 'numeric') {
         filters[[length(filters) + 1]] <- list(name = names(c), type = 'double')
@@ -60,7 +60,7 @@ queryBuilder <- function(data = NULL,
 #     if (!all(nonFunctionFilters %in% names(data))) return()
   }
 
-  for (i in 1:length(filters)) {
+  for (i in seq_along(filters)) {
     if (filters[[i]]['input'] %in% c('select', 'selectize', 'radio')) {
       if (!'values' %in% names(filters[[i]])) {
         if (is.null(data) | !filters[[i]][['name']] %in% names(data)) {
@@ -201,7 +201,7 @@ lookup <- function(id, operator, value) {
 recurseFilter <- function(filter = NULL) {
   condition <- list('AND' = '&', 'OR' = '|')
   fs <- NULL
-  for (i in 1:length(filter$rules)) {
+  for (i in seq_along(filter$rules)) {
     if (typeof(filter$rules[[i]]$rules) == 'list') {  # nested filter group
       if (is.null(fs)) {
         fs <- paste0('(', recurseFilter(filter = filter$rules[[i]]), ')')  # first filter
