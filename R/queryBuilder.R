@@ -29,6 +29,8 @@ queryBuilder <- function(data = NULL,
                          width = NULL,
                          height = NULL) {
 
+  if (!length(rules)) rules <- NULL
+
   if(autoassign == TRUE) {
     if (is.null(data)) return(NULL)
     filters <- list()
@@ -111,7 +113,7 @@ queryBuilder <- function(data = NULL,
 #' @export
 filterTable <- function(filters = NULL, data = NULL, output = c('table', 'text')) {
   output <-  match.arg(output)
-  if (is.null(filters) | is.null(data)) return(data)
+  if (is.null(filters) || !length(filters) || is.null(data)) return(data)
   ## Run through list recursively and generate a filter
   f <- recurseFilter(filters)
   if (output == 'text') {
