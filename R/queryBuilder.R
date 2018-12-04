@@ -110,6 +110,7 @@ queryBuilder <- function(data = NULL,
 #'
 #' @export
 filterTable <- function(filters = NULL, data = NULL, output = c('table', 'text')) {
+  output <-  match.arg(output)
   if (is.null(filters) | is.null(data)) return(data)
   ## Run through list recursively and generate a filter
   f <- recurseFilter(filters)
